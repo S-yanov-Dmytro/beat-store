@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block profile%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+  body{padding-top:20px;}
+.img-fluid-ava {
+    max-width: 100%;
+    height: auto;
+}
+
+.img-fluid {
+    width: 1400px;
+    height: 300px;
+    object-fit: cover;
+
+}
+
+.card-main {
+    margin-bottom: 30px;
+}
+
+.overflow-hidden {
+    overflow: hidden!important;
+}
+
+.p-0 {
+    padding: 0!important;
+}
+
+.mt-n5 {
+    margin-top: -3rem!important;
+}
+
+.linear-gradient {
+    background-image: linear-gradient(#50b2fc,#f44c66);
+}
+
+.rounded-circle {
+    border-radius: 50%!important;
+}
+
+.align-items-center {
+    align-items: center!important;
+}
+
+.justify-content-center {
+    justify-content: center!important;
+}
+
+.d-flex {
+    display: flex!important;
+}
+
+.rounded-2 {
+    border-radius: 7px !important;
+}
+
+.bg-light-info {
+    --bs-bg-opacity: 1;
+    background-color: rgba(235,243,254,1)!important;
+}
+
+.card {
+    margin-bottom: 30px;
+}
+
+.position-relative {
+    position: relative!important;
+}
+
+.shadow-none {
+    box-shadow: none!important;
+}
+
+.overflow-hidden {
+    overflow: hidden!important;
+}
+
+.border {
+    border: 1px solid #ebf1f6 !important;
+}
+
+.fs-6 {
+    font-size: 1.25rem!important;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem!important;
+}
+
+.d-block {
+    display: block!important;
+}
+
+a {
+    text-decoration: none;
+}
+
+.user-profile-tab .nav-item .nav-link.active {
+    color: #5d87ff;
+    border-bottom: 2px solid #5d87ff;
+}
+
+.mb-9 {
+    margin-bottom: 20px!important;
+}
+
+.fw-semibold {
+    font-weight: 600!important;
+}
+.fs-4 {
+    font-size: 1rem!important;
+}
+
+.card, .bg-light {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+
+.fs-2 {
+    font-size: .75rem!important;
+}
+
+.rounded-4 {
+    border-radius: 4px !important;
+}
+
+.ms-7 {
+    margin-left: 30px!important;
+}
+
+img {
+    image-rendering: pixelated;
+}
+</style>
+<div class="container">
+  <div class="card-main overflow-hidden">
+    <div class="card-body p-0">
+      <img src="{{ url_for('header') }}" alt="" class="img-fluid">
+      <div class="row align-items-center">
+        <div class="col-lg-4 order-lg-1 order-2">
+          <div class="d-flex align-items-center justify-content-around m-4">
+            <div class="text-center">
+              <i class="fa fa-file fs-6 d-block mb-2"></i>
+              <h4 class="mb-0 fw-semibold lh-1">938</h4>
+              <p class="mb-0 fs-4">Posts</p>
+            </div>
+            <div class="text-center">
+              <i class="fa fa-user fs-6 d-block mb-2"></i>
+              <h4 class="mb-0 fw-semibold lh-1">3,586</h4>
+              <p class="mb-0 fs-4">Followers</p>
+            </div>
+            <div class="text-center">
+              <i class="fa fa-check fs-6 d-block mb-2"></i>
+              <h4 class="mb-0 fw-semibold lh-1">2,659</h4>
+              <p class="mb-0 fs-4">Following</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mt-n3 order-lg-2 order-1">
+          <div class="mt-n5">
+           <div class="d-flex align-items-center justify-content-center mb-2">
+              <div class="linear-gradient d-flex align-items-center justify-content-center rounded-circle" style="width: 110px; height: 110px;">
+                  <div class="border border-4 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden" style="width: 100px; height: 100px;">
+                      <img src="{{ url_for('userava') }}" alt="" class="w-100 h-100" style="object-fit: cover;">
+                  </div>
+              </div>
+          </div>
+
+            <div class="text-center">
+              <h5 class="fs-5 mb-0 fw-semibold">{{ current_user.getName() }}</h5>
+              <p class="mb-0 fs-4"><a href="/change_profile">change profile</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-17 order-last">
+          <ul class="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-start my-3 gap-3">
+              <li>
+                  <a href="/create" class="btn btn-primary">Add To Beat</a>
+              </li>
+          </ul>
+      </div>
+      </div>
+      <ul class="nav nav-pills user-profile-tab justify-content-end mt-2 bg-light-info rounded-2" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="true">
+            <i class="fa fa-user me-2 fs-6"></i>
+            <span class="d-none d-md-block">Profile</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-followers-tab" data-bs-toggle="pill" data-bs-target="#pills-followers" type="button" role="tab" aria-controls="pills-followers" aria-selected="false" tabindex="-1">
+            <i class="fa fa-heart me-2 fs-6"></i>
+            <span class="d-none d-md-block">Followers</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-friends-tab" data-bs-toggle="pill" data-bs-target="#pills-friends" type="button" role="tab" aria-controls="pills-friends" aria-selected="false" tabindex="-1">
+            <i class="fa fa-users me-2 fs-6"></i>
+            <span class="d-none d-md-block">Friends</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-gallery-tab" data-bs-toggle="pill" data-bs-target="#pills-gallery" type="button" role="tab" aria-controls="pills-gallery" aria-selected="false" tabindex="-1">
+            <i class="fa fa-photo me-2 fs-6"></i>
+            <span class="d-none d-md-block">Gallery</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <style>
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+.card {
+  width: 320px; /* фіксований розмір картки */
+  height: 400px; /* фіксована висота картки */
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  overflow: hidden; /* обрізати зайві елементи, якщо вони виходять за межі */
+}
+
+.card img {
+  width: 100%;
+  min-height: 250px; /* мінімальна висота для фото */
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 8px; /* заокруглення кутів зображення */
+}
+
+  .card h3 {
+    margin-top: 10px;
+  }
+
+  /* Стилізація плеєра */
+  .plyr__controls button {
+    color: #fff;
+    background-color: #3498db; /* синій колір */
+  }
+
+  .plyr {
+    background-color: #f0f0f0; /* світло-сірий фон */
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .plyr__controls .plyr__controls__item,
+  .plyr__controls .plyr__time {
+    font-family: 'Arial', sans-serif; /* Змініть на вибраний вами шрифт */
+  }
+
+  .plyr__controls button:hover {
+    background-color: #2980b9; /* зміна коліру при наведенні */
+  }
+
+  .audio-container {
+  height: 50px; /* фіксована висота аудіо-плеєра */
+}
+
+.audio-container audio {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<div class="container">
+  {% for post in posts %}
+  <div class="card">
+    <img src="{{ url_for('uploaded_photo', filename=post.photo_path) }}" alt="Photo">
+    <h3>{{ post.text }}</h3>
+    <audio class="audio-container" controls>
+      <source src="{{ url_for('uploaded_audio', filename=post.music_path) }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  {% endfor %}
+</div>
+    <!-- Add more cards as needed -->
+
+  <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const players = Plyr.setup('audio', {
+    controls: ['play', 'progress']
+  });
+});
+  </script>
+  </div>
+
+{% endblock %}

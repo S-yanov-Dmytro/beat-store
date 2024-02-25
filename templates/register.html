@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Awesome Bootstrap Signup Form Free Code Snippet</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel="preload" href="{{ url_for('userava') }}" as="image">
+    <link rel="preload" href="{{ url_for('header') }}" as="image">
+</head>
+<body>
+
+<!-- Sign Up form -->
+<div class="signup-page">
+    <style>
+.signup-page h3 {
+    margin: 20px 0px 30px;
+    padding: 0px 0px 25px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    color: #03A9F4;
+}
+.signup-page a {
+    color: #03A9F4;
+}
+.signup-page form {
+    margin: 30px auto;
+    border: 1px solid #e4e4e4;
+    width: 500px;
+    padding: 10px 25px;
+    border-radius: 10px;
+    box-shadow: 0 0px 6px rgba(173, 173, 173, 0.5);
+}
+.signup-page .btn {
+    width: 100%;
+    margin: 10px 0px;
+    font-size: 18px;
+    background-color: #03A9F4;
+    border: none;
+}
+.signup-page .btn:hover{
+  opacity: 0.8;
+}
+.signup-page label.term-policy {
+    margin: 10px 0px 0px;
+}
+.signup-page label.choose-icon {
+    float: right;
+    margin-top: -38px;
+    background-color: #f5f5f5;
+    padding: 7px 15px;
+    height: 38px;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    border: 1px solid #ccc;
+    position: relative;
+    z-index: 999;
+}
+.signup-page input[type="file"] {
+    padding: 3px 3px;
+}
+.signup-page .required-field {
+    color: #F44336;
+    font-size: 17px;
+    margin: 0px 2px;
+}
+.signup-page label {
+    margin-bottom: 3px;
+}
+
+/*--Responsive CSS--*/
+@media(max-width: 767px){
+.signup-page form {
+    width: 90%;
+}
+}
+</style>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="container mt-3">
+                <div class="alert {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<form action="" method="post" class="container">
+    <h3>Signup</h3>
+      <div class="form-group">
+          <label for="name">Full Name<span class="required-field">*</span></label>
+          <input type="text" class="form-control" placeholder="Full Name" name="name" required>
+      </div>
+      <div class="form-group">
+          <label for="email">Email<span class="required-field">*</span></label>
+          <input type="text" class="form-control" placeholder="Enter Email" name="email" required>
+      </div>
+        <div class="form-group">
+          <label for="login">Login<span class="required-field">*</span></label>
+          <input type="text" class="form-control" placeholder="Login" name="login" required>
+      </div>
+      <div class="form-group">
+          <label for="psw">Password<span class="required-field">*</span></label>
+          <input type="password" class="form-control" placeholder="Enter Password" name="psw" required>
+        </div>
+        <div class="form-group">
+          <label for="psw-repeat">Repeat Password<span class="required-field">*</span></label>
+          <input type="password" class="form-control" placeholder="Repeat Password" name="psw-repeat" required>
+        </div>
+
+      <div class="form-group">
+        <label class="term-policy"><input type="checkbox" required> By creating an account you agree to our <a href="#">Terms & Privacy</a>.</label>
+      </div>
+        <button type="submit" class="btn btn-success">Signup</button>
+        <label><input type="checkbox" checked="checked" name="checkbox"> Remember me</label>
+      <hr>
+      <div class="form-group">
+        <p class="text-center">Already have an account? <a href="/login">Login</a></p>
+      </div>
+  </form>
+</div>
+</body>
+</html>
