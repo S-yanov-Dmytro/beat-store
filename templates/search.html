@@ -1,0 +1,364 @@
+{% extends 'base.html' %}
+
+{% block search %}
+<style>
+  .post {
+    width: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative; /* Добавлено позиционирование */
+  }
+
+  .post-image {
+    float: left;
+    width: 120px;
+    height: 120px;
+    margin-right: 20px;
+    object-fit: cover;
+    cursor: pointer; /* Добавлен указатель курсора для обозначения кликабельности */
+    transition: transform 0.2s ease; /* Добавлено свойство transition для плавного анимирования */
+  }
+
+  .post-image:hover {
+    transform: scale(1.1); /* Добавлена анимация при наведении */
+  }
+
+  .post-content {
+    overflow: hidden;
+    padding: 20px;
+  }
+
+  .post h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .post p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .audio-container {
+    margin-top: 10px;
+  }
+
+
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #ddd;
+    position: relative;
+    margin-top: 10px;
+    cursor: pointer; /* Добавлен указатель курсора для обозначения кликабельности */
+  }
+
+  .progress {
+    height: 100%;
+    background-color: #007bff;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Модальное окно */
+  .modal {
+    display: none; /* Скрыть модальное окно по умолчанию */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%; /* Уменьшение ширины модального окна */
+    max-width: 600px; /* Ограничение максимальной ширины */
+    border-radius: 8px;
+}
+
+ .close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.options-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.post-content {
+  position: relative;
+}
+.post-title {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.post-metadata {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 10px; /* Добавляем отступ слева */
+}
+
+@media only screen and (max-width: 600px) {
+    .modal-content {
+        width: 90%; /* Уменьшаем ширину модального окна для маленьких экранов */
+        margin: 10% auto; /* Изменяем отступы */
+    }
+}
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+
+<div class="container">
+  <h1>Вот что мы нашли по вашему запросу "{{ search }}"</h1>
+</div>
+
+<div class="container">
+  {% for post in posts %}
+<div class="post">
+<img id="avatar-{{ loop.index }}" class="post-image" src="{{ url_for('uploaded_photo', filename=post.photo_path) }}" alt="Photo" onclick="toggleAudio('{{ loop.index }}')">
+  <div class="post-content">
+    <!-- Добавляем кнопку в угол карточки -->
+    <button class="options-button" onclick="openModal('{{ url_for('uploaded_photo', filename=post.photo_path) }}', '{{ post.text }}', '{{ post.bpm }}', '{{ post.genre }}', '{{ post.description }}', '{{ post.author }}', [ {% for tag in post.tags %}'{{ tag.value }}'{% if not loop.last %}, {% endif %}{% endfor %} ])">&#8286;</button>
+<h3 class="post-title">{{ post.text }} <span class="post-metadata">BPM: {{ post.bpm }} | Genre: {{ post.genre }}</span></h3>
+    <div class="audio-container">
+      <audio id="audio-{{ loop.index }}" src="{{ url_for('uploaded_audio', filename=post.music_path) }}" ontimeupdate="updateProgress('{{ loop.index }}')"></audio>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="content-wrapper">
+      <div class="image-container">
+        <img id="modal-image" src="" alt="Photo">
+      </div>
+      <div class="details-container">
+        <h3 id="modal-title"></h3>
+        <p class="modal-info"><span class="info-label">Автор:</span> <span id="modal-author"></span></p>
+        <p class="modal-info"><span class="info-label">Жанр:</span> <span id="modal-genre"></span></p>
+        <p class="modal-info"><span class="info-label">BPM:</span> <span id="modal-bpm"></span></p>
+        <p id="modal-description" class="modal-info"></p>
+      </div>
+    </div>
+    <div id="tagContainer" class="tags-container"></div>
+  </div>
+</div>
+
+<style>
+.content-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+.image-container {
+    width: 50%;
+    max-width: 50%;
+    position: relative;
+    padding-right: 10px; /* Уменьшаем отступ с правой стороны */
+}
+
+#modal-image {
+    max-width: 100%;
+    max-height: 300px; /* Настройте максимальную высоту в соответствии с вашими предпочтениями */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+
+.details-container {
+    width: 50%;
+    padding-left: 10px; /* Уменьшаем отступ с левой стороны */
+}
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.modal-info {
+    margin: 5px 0;
+    clear: both;
+    white-space: nowrap; /* Устанавливаем свойство white-space для предотвращения переноса строк */
+}
+
+.modal-info span {
+    display: inline-block; /* Устанавливаем спаны в блочный элемент, чтобы можно было задать им ширину */
+    margin-right: 10px; /* Добавляем немного отступа между меткой и значением */
+    font-weight: bold;
+}
+
+.info-label {
+    display: inline-block;
+    width: 50px; /* Ширина для метки (например) */
+}
+margin-bottom: 5px;
+}
+
+#modal-genre,
+#modal-bpm {
+    margin-bottom: 10px;
+}
+
+.tags-container {
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #C0C0C0;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+  .modal-content {
+    width: 90%; /* Уменьшаем ширину модального окна для маленьких экранов */
+    margin: 5% auto; /* Изменяем отступы */
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .image-container {
+    width: 100%;
+    max-width: 100%; /* Увеличиваем максимальную ширину контейнера изображения */
+  }
+
+  #modal-image {
+    width: 100%;
+  }
+
+  .details-container {
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .close {
+    top: 5px;
+    right: 5px;
+  }
+}
+</style>
+
+<script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+
+<script>
+  function toggleAudio(index) {
+    var audio = document.getElementById('audio-' + index);
+    var allAudios = document.getElementsByTagName('audio');
+
+    // Остановка всех других аудиофайлов
+    for (var i = 0; i < allAudios.length; i++) {
+        if (allAudios[i] !== audio) {
+            allAudios[i].pause();
+        }
+    }
+
+    // Включение или выключение выбранного аудио
+    if (audio.paused) {
+        audio.play();
+    } else {
+        audio.pause();
+    }
+}
+   document.addEventListener('DOMContentLoaded', () => {
+    const players = Plyr.setup('audio', {
+      controls: ['progress'],
+
+    });
+  });
+function openModal(photoPath, title, bpm, genre, description, author, tags) {
+    var modal = document.getElementById("myModal");
+    modal.style.display = "block";
+    document.getElementById("modal-image").src = photoPath;
+    document.getElementById("modal-title").textContent = title;
+    document.getElementById("modal-author").textContent = author;
+    document.getElementById("modal-genre").textContent = genre;
+    document.getElementById("modal-bpm").textContent = bpm;
+    var tagContainer = document.getElementById("tagContainer"); // Получите контейнер тегов
+    tagContainer.innerHTML = ""; // Очистить существующие теги
+   tags.forEach(function(tag, index) {
+    var span = document.createElement("span");
+    span.className = "tag";
+    span.textContent = tag.trim();
+    tagContainer.appendChild(span);
+
+    // Добавляем пробел между тегами, кроме последнего
+    if (index < tags.length - 1) {
+        tagContainer.appendChild(document.createTextNode(' '));
+    }
+});
+
+
+    document.getElementById("modal-description").textContent = description;
+}
+
+  // Закрытие модального окна при нажатии на крестик
+  var closeBtn = document.querySelector(".close");
+  closeBtn.onclick = function() {
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+  }
+
+  // Закрытие модального окна при клике за его пределами
+  window.onclick = function(event) {
+    var modal = document.getElementById("myModal");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+
+
+
+</script>
+
+
+{% endblock %}

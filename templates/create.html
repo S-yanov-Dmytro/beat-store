@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block create %}
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,29 +19,117 @@
         label {
             font-weight: bold;
         }
+
+        .recent-tags {
+            margin-top: 10px;
+        }
+
+        .recent-tags span {
+            margin-right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Стилі для поля введення тегів */
+        #tags {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Обрамлення введення тегів при фокусі */
+        #tags:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .tag-item {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+#bpmDisplay {
+text-transform: uppercase;
+}
+
+
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    <script src="../../assets/vendor/bootstrap-tagsinput/js/bootstrap-tagsinput.min.js"></script>
+
+
 <body>
     <div class="container">
         <h1 class="mb-5">Upload Files and Input Text</h1>
-
         <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="image_file" class="form-label">Image File:</label>
                 <input class="form-control" type="file" name="image_file">
             </div>
-
             <div class="mb-3">
                 <label for="audio_file" class="form-label">Audio File:</label>
                 <input class="form-control" type="file" name="audio_file">
             </div>
-
             <div class="mb-3">
                 <label for="text" class="form-label">Text:</label>
                 <input class="form-control" type="text" name="text">
             </div>
+            <div class="mb-3">
+                <label for="genre" class="form-label">Genre:</label>
+                <select class="form-select" name="genre">
+                    <option value="rock">Rock</option>
+                    <option value="pop">Pop</option>
+                    <option value="hip-hop">Hip Hop</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="bpm" class="form-label">BPM:</label>
+                    <input name="bpm" id="ex8" data-id='ex1RangePicker' type="range" data-min="0" data-max="20" data-step="1" data-value="14"/>
+                <label id="bpmDisplay">14</label> <!-- This label will display the current value of the range -->
+            </div>
 
+
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags:</label>
+                <input id="tags" class="form-control" name="tags" placeholder="Add tags">
+            </div>
             <button type="submit" class="btn btn-primary">Upload</button>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('tags');
+
+    new Tagify(input, {
+        maxTags: 7,
+        enforceWhitelist: false,
+        whitelist: ['da'],
+        maxTagLength: 15,
+        delimiters: " " // Задаем пробел в качестве разделителя
+    });
+
+    var rangeInput = document.getElementById('ex8');
+    var bpmDisplay = document.getElementById('bpmDisplay');
+
+    // Update the label text with the current value of the range input
+    rangeInput.addEventListener('input', function () {
+        bpmDisplay.textContent = rangeInput.value;
+    });
+});
+
+</script>
+
+
 </body>
 {% endblock %}

@@ -3,7 +3,10 @@
 {% block posts %}
 
 <div class="container marketing">
-
+       <div class="container">
+    <input name="search" id="searchInput" placeholder="Search...">
+    <ul id="suggestions"></ul>
+</div>
     <div class="row">
         <div class="col-lg-4">
             <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
@@ -22,24 +25,69 @@
             <h2>Heading</h2>
             <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
             <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
+        </div>
+    </div>
 
-    <!-- START THE FEATURETTES -->
 
     <hr class="featurette-divider">
-{% for post in posts %}
-<div class="row featurette">
-    <div class="col-md-7 {% if loop.index is divisibleby 2 %} order-md-2 {% endif %}">
-        <h2 class="featurette-heading">{{ post.text }}</h2>
-        <p class="lead">{{ post.bigtext }}</p>
-    </div>
-    <div class="col-md-4">
-        <img class="featurette-image img-fluid mx-auto" src="{{ url_for('posts_photo', filename=post.photo_path) }}" alt="Photo">
-    </div>
-</div>
-<hr class="featurette-divider">
-{% endfor %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var searchInput = document.getElementById('searchInput');
+    var suggestions = document.getElementById('suggestions');
+    var dataFromFlask = {{ data|tojson }};
+    var dummySuggestions = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Orange'];
+
+    function sendSearchQuery(query) {
+        window.location.href = "/search?query=" + encodeURIComponent(query);
+    }
+
+    // При фокусе на поле ввода добавляем стандартные подсказки
+    searchInput.addEventListener('focus', function() {
+        suggestions.innerHTML = '';
+        dummySuggestions.forEach(function(suggestion) {
+            var li = document.createElement('li');
+            li.textContent = suggestion;
+            li.addEventListener('click', function() {
+                sendSearchQuery(suggestion);
+            });
+            suggestions.appendChild(li);
+        });
+    });
+
+    // При вводе текста фильтруем подсказки из БД
+    searchInput.addEventListener('input', function() {
+        var searchText = searchInput.value.trim();
+        suggestions.innerHTML = '';
+
+        if (searchText !== '') {
+            var filteredSuggestions = dataFromFlask.filter(function(suggestion) {
+                return suggestion.toLowerCase().includes(searchText.toLowerCase());
+            });
+
+            filteredSuggestions.forEach(function(suggestion) {
+                var li = document.createElement('li');
+                li.textContent = suggestion;
+                li.addEventListener('click', function() {
+                    sendSearchQuery(suggestion);
+                });
+                suggestions.appendChild(li);
+            });
+        }
+    });
+
+    // При нажатии Enter выполняем поиск по тексту в поле ввода
+    searchInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            var searchText = searchInput.value.trim();
+            if (searchText !== '') {
+                sendSearchQuery(searchText);
+            }
+        }
+    });
+});
+
+
+    </script>
 
 </div>
 

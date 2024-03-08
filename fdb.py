@@ -1,6 +1,6 @@
 import sqlite3
 from time import sleep
-
+import json
 
 class FDatabase:
     def __init__(self, db):
@@ -105,14 +105,14 @@ class FDatabase:
 
         return res
 
-    def updateUserAvatar(self, avatar, user_id, type_avatar):
+    def updateUserAvatar(self, avatar, login, type_avatar):
         if not avatar:
             return False
 
         try:
-            binary = sqlite3.Binary(avatar)
+
             self.__cur.execute(f"""
-            UPDATE user SET {type_avatar} = ? WHERE id = ?""", (binary, user_id))
+            UPDATE user SET {type_avatar} = ? WHERE login = ?""", (avatar, login))
             self.__db.commit()
             sleep(1)
         except Exception as ex:
@@ -121,18 +121,18 @@ class FDatabase:
 
         return True
 
-    def addCardBeat(self, login, photo_path, music_path, text):
+    def addCardBeat(self, login, photo_path, music_path, text, genre, bpm, tags):
         try:
             self.__cur.execute("""
-        INSERT INTO users_card VALUES(?, ?, ?, ?)""", (login, photo_path, music_path, text))
+        INSERT INTO users_card VALUES(?, ?, ?, ?, ?, ?, ?)""", (login, photo_path, music_path, text, genre, bpm, tags))
             self.__db.commit()
         except Exception as ex:
             print(ex)
 
-    def getCardBeat(self, login):
+    def getCardBeat(self, data, colum):
         try:
-            self.__cur.execute("""
-            SELECT photo_path, music_path, text_beat FROM users_card WHERE login = ?""", (login,))
+            self.__cur.execute(f"""
+            SELECT photo_path, music_path, text_beat, bpm, genre, tags FROM users_card WHERE {colum} = ?""", (data,))
             rows = self.__cur.fetchall()
             posts = []
             if rows:
@@ -140,13 +140,30 @@ class FDatabase:
                     post = {
                         'photo_path': row[0],
                         'music_path': row[1],
-                        'text': row[2]
+                        'text': row[2],
+                        'bpm': row[3],
+                        'genre': row[4],
+                        'tags': json.loads(row[5])
                     }
                     posts.append(post)
             return posts
         except Exception as ex:
             print(ex)
             return []
+
+    def getNameTagsBeat(self):
+
+        self.__cur.execute("""
+        SELECT name, login FROM user""")
+        row = self.__cur.fetchall()
+        search_data = []
+        if row:
+            for i in row:
+                search_data.append((i['name'], i['login']))
+        else:
+            print("Данных нету")
+        return search_data
+
 
 
 

@@ -1,4 +1,5 @@
 from flask import url_for
+from fdb import FDatabase
 
 
 class UserLogin:
@@ -56,6 +57,8 @@ class UserLogin:
             img = self.__user['header']
 
         return img
+
+
 
     def verifyExt(self, filename):
         ext = filename.rsplit('.', 1)[1]

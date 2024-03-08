@@ -2,7 +2,6 @@ import sqlite3
 from flask import Flask, request, redirect, url_for, flash, render_template, session, abort, g, make_response, \
     send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 import os
 from fdb import FDatabase
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -19,9 +18,16 @@ UPLOAD_FOLDER_IMG = 'uploads/image'
 UPLOAD_FOLDER_MUS = 'uploads/audio'
 UPLOAD_FOLDER_POST = 'posts/image'
 
+UPLOAD_FOLDER_USER_AVA = 'uploads/user_avatar'
+UPLOAD_FOLDER_USER_HEADER = 'uploads/user_header'
+
 app.config['UPLOAD_FOLDER_IMG'] = UPLOAD_FOLDER_IMG
 app.config['UPLOAD_FOLDER_MUS'] = UPLOAD_FOLDER_MUS
 app.config['UPLOAD_FOLDER_POST'] = UPLOAD_FOLDER_POST
+
+app.config['UPLOAD_FOLDER_USER_AVA'] = UPLOAD_FOLDER_USER_AVA
+app.config['UPLOAD_FOLDER_USER_HEADER'] = UPLOAD_FOLDER_USER_HEADER
+
 app.config['DATABASE'] = 'database.db'
 
 
@@ -62,15 +68,18 @@ def create_db():
         email text NOT NULL,
         login text NOT NULL,
         password text NOT NULL,
-        avatar BLOB DEFAULT NULL,
-        header BLOB DEFAULT NULL
+        avatar text DEFAULT NULL,
+        header text DEFAULT NULL
         )""")
     cur.execute("""
         CREATE TABLE IF NOT EXISTS users_card (
         login text NOT NULL,
         photo_path TEXT NOT NULL, 
         music_path TEXT NOT NULL, 
-        text_beat TEXT NOT NULL
+        text_beat TEXT NOT NULL,
+        genre TEXT NOT NULL,
+        bpm INTEGER NOT NULL,
+        tags TEXT NOT NULL
     )""")
 
     db.commit()
@@ -108,8 +117,12 @@ def upload_file():
         file = request.files['image_file']
         mus = request.files['audio_file']
         text = request.form['text']
-        print(text)
-        if file and mus and text and current_user.verifyExt(file.filename) and current_user.verifyExt(mus.filename):
+        genre = request.form['genre']
+        bpm = request.form['bpm']
+        tags = request.form['tags']
+        if (file and mus and text and genre and bpm and tags and
+                current_user.verifyExt(file.filename) and
+                current_user.verifyExt(mus.filename)):
             try:
                 photo_filename = str(uuid4()) + f".{file.filename.rsplit('.', 1)[1]}"
                 audio_filename = str(uuid4()) + f".{mus.filename.rsplit('.', 1)[1]}"
@@ -120,7 +133,10 @@ def upload_file():
                 res = dbase.addCardBeat(current_user.getLogin(),
                                         photo_filename,
                                         audio_filename,
-                                        text)
+                                        text,
+                                        genre,
+                                        bpm,
+                                        tags)
                 if res:
                     flash("Музыка добавлена успешно", category='success')
             except Exception as ex:
@@ -143,14 +159,15 @@ def uploaded_audio(filename):
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('profile'))
+        return redirect(url_for('profile', username=current_user.getLogin()))
+
     if request.method == "POST":
         user = dbase.getUserByLogin(request.form['login'])
         if user and check_password_hash(user['password'], request.form['psw']):
             tm = True if request.form.get('checkbox') else False
             userlogin = UserLogin().create(user)
             login_user(userlogin, remember=tm)
-            return redirect(request.args.get('next') or url_for('profile'))
+            return redirect(request.args.get('next') or url_for('profile', username=user['login']))
 
         flash("Неверная пара логин/пароль", category='error')
 
@@ -187,14 +204,28 @@ def pageNotFound(error):
     return render_template('error.html')
 
 
-@app.route("/")
-@app.route("/home")
+@app.route("/posts_profile/<username>")
 # @login_required
-def show_post():
+def show_post(username):
     posts = dbase.getPost()
+    users = dbase.getUserByLogin(username)
     print(posts)
 
-    return render_template('post.html', posts=posts)
+    return render_template('posts_profile.html',
+                           posts=posts,
+                           avatar=users['avatar'],
+                           header=users['header'],
+                           username=username)
+
+
+@app.route("/home")
+# @login_required
+def main():
+    data = dbase.getNameTagsBeat()
+    res = []
+    for i in data:
+        res += i
+    return render_template('post.html', data=res)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -217,7 +248,7 @@ def register():
                     userlogin = UserLogin().create(user)
                     login_user(userlogin, remember=tm)
                     sleep(1)
-                    return redirect(url_for('profile'))
+                    return redirect(url_for('profile', username=request.form['login']))
                 else:
                     flash("Ошибка при получении данных", category='error')
         else:
@@ -226,29 +257,30 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/register_update', methods=['POST', 'GET'])
-def register_update():
+@app.route('/register_update/<username>', methods=['POST', 'GET'])
+def register_update(username):
+    users = dbase.getUserByLogin(username)
 
     if request.method == 'POST':
         new_name = request.form['name_update'] if request.form.get('name_update') else current_user.getName()
         new_email = request.form['email_update'] if request.form.get('email_update') else current_user.getEmail()
         new_login = request.form['login_update'] if request.form.get('login_update') else current_user.getLogin()
 
-        try:
-            res = dbase.updateUser(current_user.get_id(), new_name, new_email, new_login)
-            if res == 400:
-                flash("Данная почта уже используется", category='error')
-                return render_template('change_profile.html')
-            if res == 401:
-                flash("Имя пользователя уже занято", category='error')
-                return render_template('change_profile.html')
+        # try:
+        res = dbase.updateUser(current_user.get_id(), new_name, new_email, new_login)
+        if res == 400:
+            flash("Данная почта уже используется", category='error')
+            return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
+        if res == 401:
+            flash("Имя пользователя уже занято", category='error')
+            return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
 
-            return redirect(url_for('profile'))
-        except Exception as e:
-            flash("Произошла ошибка при обновлении данных пользователя", category='error')
-            print(e)
+        return redirect(url_for('profile', username=username))
+        # except Exception as e:
+        #     flash("Произошла ошибка при обновлении данных пользователя", category='error')
+        #     print(e)
 
-    return render_template('change_profile.html')
+    return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
 
 
 @app.route('/logout')
@@ -259,57 +291,126 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/profile")
+@app.route("/profile/<username>")
 @login_required
-def profile():
-    post = dbase.getCardBeat(current_user.getLogin())
-    profile_url = url_for('profile', login=login)
-    return render_template('profile.html', posts=post)
+def profile(username):
+    # Получаем логин текущегоб пользователя
+    # login = current_user.getLogin()
+    # Получаем посты для профиля пользователя
+    posts = dbase.getCardBeat(data=username, colum='login')
+    user_data = dbase.getUserByLogin(username)
+    print(user_data['login'])
+    print(user_data['name'])
+    print(user_data['id'])
+    post_len = len(posts)
+    # Генерируем URL с именем пользователя
+    profile_url = url_for('profile', username=username)
+    print(profile_url)
+    return render_template('profile.html',
+                           posts=posts,
+                           post_len=post_len,
+                           name=user_data['name'],
+                           avatar=user_data['avatar'],
+                           header=user_data['header'],
+                           username=username)
 
 
-@app.route('/change_profile')
+@app.route('/change_profile/<username>')
 @login_required
-def change_profile():
+def change_profile(username):
+    users = dbase.getUserByLogin(username)
     return render_template('change_profile.html',
                            get_name=current_user.getName(),
                            get_email=current_user.getEmail(),
-                           get_login=current_user.getLogin())
+                           get_login=current_user.getLogin(),
+                           avatar=users['avatar'],
+                           header=users['header'],
+                           username=username)
 
 
+def getAvatarByLogin(app, login):
+    img = None
+    user = dbase.getUserByLogin(login)  # Использование метода getUserByLogin текущего экземпляра класса
+    if user:
+        if not user['avatar']:
+            try:
+                with app.open_resource(app.root_path + url_for('static', filename='img/default.jpg'),
+                                       "rb") as f:
+                    img = f.read()
+            except FileNotFoundError as e:
+                print("Не найден аватар по умолчанию: " + str(e))
+        else:
+            img = user['avatar']
+    return img
 
-@app.route('/userava')
+
+@app.route('/userava/<username>/<path:filename>')
+def userava(username, filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER_USER_AVA'], filename)
+
+
+def getHeaderByLogin(app, login):
+    img = None
+    user = dbase.getUserByLogin(login)  # Использование метода getUserByLogin текущего экземпляра класса
+    if user:
+        if not user['header']:
+            try:
+                with app.open_resource(app.root_path + url_for('static', filename='img/default_header.jpg'),
+                                       "rb") as f:
+                    img = f.read()
+            except FileNotFoundError as e:
+                print("Не найден аватар по умолчанию: " + str(e))
+        else:
+            img = user['header']
+    return img
+
+
+@app.route('/header/<username>/<path:filename>')
+def header(username, filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER_USER_HEADER'], filename)
+
+
+@app.route('/upload_avatar/<username>', methods=['POST', 'GET'])
 @login_required
-def userava():
-    img = current_user.getAvatar(app)
-    if not img:
-        return ""
-
-    h = make_response(img)
-    h.headers['Content-Type'] = 'image/jpg'
-    return h
-
-
-@app.route('/header')
-@login_required
-def header():
-    img = current_user.getHeader(app)
-    if not img:
-        return ""
-
-    h = make_response(img)
-    h.headers['Content-Type'] = 'image/jpg'
-    return h
-
-
-@app.route('/upload_avatar', methods=['POST', 'GET'])
-@login_required
-def upload_avatar():
+def upload_avatar(username):
     if request.method == 'POST':
         file = request.files['file']
         if file and current_user.verifyExt(file.filename):
             try:
-                img = file.read()
-                res = dbase.updateUserAvatar(img, current_user.get_id(), 'avatar')
+                photo_filename = str(uuid4()) + f".{file.filename.rsplit('.', 1)[1]}"
+
+                file.save(os.path.join(app.config['UPLOAD_FOLDER_USER_AVA'], photo_filename))
+
+                res = dbase.updateUserAvatar(avatar=photo_filename,
+                                             login=username,
+                                             type_avatar='avatar')
+                if res:
+                    flash("Аватар был успешно обновлен", category='success')
+                else:
+                    flash("Произошла ошибка", category='error')
+            except Exception as ex:
+                print(ex)
+        else:
+            flash("Ошибка обновления аватара", category='error')
+
+    return redirect(url_for('change_profile', username=username))
+
+
+@app.route('/upload_header/<username>', methods=['POST', 'GET'])
+@login_required
+def upload_header(username):
+    users = dbase.getUserByLogin(username)
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and current_user.verifyExt(file.filename):
+            try:
+                photo_filename = str(uuid4()) + f".{file.filename.rsplit('.', 1)[1]}"
+
+                file.save(os.path.join(app.config['UPLOAD_FOLDER_USER_HEADER'], photo_filename))
+
+                res = dbase.updateUserAvatar(avatar=photo_filename,
+                                             login=username,
+                                             type_avatar='header')
 
                 if res:
                     flash("Аватар был успешно обновлен", category='success')
@@ -320,35 +421,25 @@ def upload_avatar():
         else:
             flash("Ошибка обновления аватара", category='error')
 
-    return redirect(url_for('change_profile'))
-
-
-@app.route('/upload_header', methods=['POST', 'GET'])
-@login_required
-def upload_header():
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and current_user.verifyExt(file.filename):
-            try:
-                img = file.read()
-                res = dbase.updateUserAvatar(img, current_user.get_id(), 'header')
-
-                if res:
-                    flash("Аватар был успешно обновлен", category='success')
-                else:
-                    flash("Произошла ошибка", category='error')
-            except Exception as ex:
-                print(ex)
-        else:
-            flash("Ошибка обновления аватара", category='error')
-
-    return redirect(url_for('change_profile'))
+    return redirect(url_for('change_profile', username=username, users=users))
 
 
 @app.route('/upload_profile', methods=['POST', 'GET'])
 @login_required
 def upload_profile():
     return redirect(url_for('profile'))
+
+
+@app.route('/search')
+def search():
+    query = request.args.get('query')
+    post = dbase.getCardBeat(data=query, colum='text_beat')
+    print(query)
+    data = dbase.getNameTagsBeat()
+    res = []
+    for i in data:
+        res += i
+    return render_template('search.html', posts=post, search=query)
 
 
 if __name__ == "__main__":
