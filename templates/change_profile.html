@@ -1,38 +1,74 @@
 {% extends 'base.html' %}
 
-<link rel="preload" href="{{ url_for('userava', username=username, filename=avatar) }}" as="image">
-<link rel="preload" href="{{ url_for('header', username=username, filename=header) }}" as="image">
-
 {% block content %}
+<style>
+    .form-control {
+        background-color: #333 !important;
+        color: #fff !important;
+        border-color: #555 !important;
+    }
+
+    .personal-info {
+        background-color: #1a1a1a;
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .social-input {
+        margin-left: 15px;
+        width: 62%;
+    }
+
+    body {
+        background-color: #121212;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #8a2be2;
+        border-color: #8a2be2;
+    }
+
+    .btn-primary:hover {
+        background-color: #7a25c3;
+        border-color: #7a25c3;
+    }
+</style>
 
 <div class="container bootstrap snippets bootdey">
-    <h1 class="text-primary">Edit Profile</h1>
     <hr>
-  <div class="row">
-    <!-- Images column -->
-    <div class="col-md-6">
-        <div class="text-center">
-            <img src="{{ url_for('userava', username=username, filename=avatar) }}" class="avatar img-circle img-thumbnail" alt="avatar" style="width: 180px; height: auto;">
-            <h6>Upload a different photo...</h6>
-            <form action="{{ url_for('upload_avatar', username=username) }}" method="POST" enctype="multipart/form-data">
-                <input type="file" class="form-control" name="file">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-                </div>
-                <hr>
-                <div class="text-center">
-                    <img src="{{ url_for('header', username=username, filename=header) }}" class="img-fluid" alt="avatar">
-                    <h6>Upload a different photo...</h6>
-                    <form action="{{ url_for('upload_header', username=username) }}" method="POST" enctype="multipart/form-data">
-                        <input type="file" class="form-control" name="file">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="text-center">
+                {% if avatar %}
+                <img src="{{ url_for('userava', username=username, filename=avatar) }}" class="avatar img-circle img-thumbnail" alt="avatar" style="width: 180px; height: auto;">
+                {% else %}
+                <img src="{{ url_for('static', filename='img/default.jpg') }}" class="avatar img-circle img-thumbnail" alt="avatar" style="width: 180px; height: auto;">
+                {% endif %}
+
+                <h6>Upload a different photo...</h6>
+                <form action="{{ url_for('upload_avatar', username=username) }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" class="form-control" name="file">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <hr>
+            <div class="text-center">
+                {% if header %}
+                <img src="{{ url_for('header', username=username, filename=header) }}" class="img-fluid" alt="avatar">
+                {% else %}
+                <img src="{{ url_for('static', filename='img/default_header.jpg') }}" class="img-fluid" alt="avatar">
+                {% endif %}
+
+                <h6>Upload a different photo...</h6>
+                <form action="{{ url_for('upload_header', username=username) }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" class="form-control" name="file">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
 
-
-        <!-- Form column -->
         <div class="col-md-6 personal-info">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -63,15 +99,51 @@
                         <input class="form-control" type="text" placeholder="{{ get_email }}" name="email_update">
                     </div>
                 </div>
-               <div class="form-group">
+                <div class="form-group">
                     <label class="col-lg-3 control-label">Login:</label>
                     <div class="col-lg-8">
                         <input class="form-control" type="text" placeholder="{{ get_login }}" name="login_update">
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="social-media">Social Media</label>
+                    <select id="social-media" class="form-control social-input">
+                        <option value="none">Select</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="tik_tok">Tik Tok</option>
+                        <option value="vk">VK</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                </div>
+                <div class="form-group" id="instagram-input" style="display: none;">
+                    <label class="col-lg-3 control-label">Instagram</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ instagram }}" name="instagram">
+                </div>
+                <div class="form-group" id="telegram-input" style="display: none;">
+                    <label class="col-lg-3 control-label">Telegram</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ telegram }}" name="telegram">
+                </div>
+                <div class="form-group" id="facebook-input" style="display: none;">
+                    <label class="col-lg-3 control-label">Facebook</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ facebook }}" name="facebook">
+                </div>
+                <div class="form-group" id="tik_tok-input" style="display: none;">
+                    <label class="col-lg-3 control-label">Tik Tok</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ tik_tok }}" name="tik_tok">
+                </div>
+                <div class="form-group" id="vk-input" style="display: none;">
+                    <label class="col-lg-3 control-label">VK</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ vk }}" name="vk">
+                </div>
+                <div class="form-group" id="youtube-input" style="display: none;">
+                    <label class="col-lg-3 control-label">YouTube</label>
+                    <input type="text" class="form-control social-input" autocomplete="off" placeholder="{{ youtube }}" name="youtube">
+                </div>
+                <div class="form-group">
                     <div class="col-lg-8 text-right">
-                        <a href="{{ url_for('logout') }}" class="btn btn-secondary">выйти из профиля</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
                         <button type="submit" name="update" class="btn btn-primary">Update</button>
                     </div>
                 </div>
@@ -79,5 +151,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById("social-media").addEventListener("change", function() {
+        var selectedOption = this.value;
+        var socialMediaInputs = document.querySelectorAll(".form-group[id$='-input']");
+        socialMediaInputs.forEach(function(input) {
+            if (input.id === selectedOption + "-input") {
+                input.style.display = "block";
+            } else {
+                input.style.display = "none";
+            }
+        });
+    });
+</script>
 
 {% endblock %}

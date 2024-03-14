@@ -3,6 +3,26 @@
 {% block profile%}
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <style>
+body {
+        background-color: #1a1a1a;
+        color: #fff;
+        }
+
+.content-container {
+    margin-top: -120px !important;
+}
+
+    .container {
+    max-width: 3000px;
+    margin: 0 auto;
+    padding: 0;
+      justify-content: center;
+  }
+  .container_s {
+  display: flex;
+  flex-wrap: wrap;
+}
+
   body{padding-top:20px;}
 .img-fluid-ava {
     max-width: 100%;
@@ -10,14 +30,17 @@
 }
 
 .img-fluid {
-    width: 1400px;
-    height: 300px;
-    object-fit: cover;
+    max-height: 700px;
+        width: 100%;
+        object-fit: cover;
+        /* Add gradient effect to the image */
+        mask-image: linear-gradient(to bottom, rgba(255,255,255,1) 90%, rgba(255,255,255,0));
+        -webkit-mask-image: linear-gradient(to bottom, rgba(255,255,255,1) 50%, rgba(255,255,255,0));
 
 }
 
 .card-main {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .overflow-hidden {
@@ -58,8 +81,7 @@
 
 .bg-light-info {
     --bs-bg-opacity: 1;
-    background-color: rgba(235,243,254,1)!important;
-}
+background-color: rgba(70, 70, 70, 1)!important;}
 
 .card {
     margin-bottom: 30px;
@@ -101,6 +123,19 @@ a {
     color: #5d87ff;
     border-bottom: 2px solid #5d87ff;
 }
+.nav-pills .nav-link {
+    color: grey;
+}
+
+.nav-pills .nav-link.active {
+    color: white;
+}
+
+.nav-pills .nav-link {
+    background-color: grey;
+    border-radius: 10px;
+    padding: 5px 10px;
+}
 
 .mb-9 {
     margin-bottom: 20px!important;
@@ -132,12 +167,81 @@ a {
 img {
     image-rendering: pixelated;
 }
+    .social-icons {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+.social-icons>li {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+.social-icons a {
+  position: relative;
+  background-color: #eee;
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: background-color .3s ease-in-out;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: .25rem;
+}
+.social-icons a:hover {
+  background-color: #e0e0e0;
+}
+
+.btn {
+background-color: #6f42c1;
+}
+
+.btn:hover {
+            background-color: #5a3f9b;
+            opacity: 0.8;
+        }
+.social-icons a::before {
+  content: "";
+  position: absolute;
+  width: 1.2rem;
+  height: 1.2rem;
+  left: .65rem;
+  top: .65rem;
+  background: transparent no-repeat center center;
+  background-size: 100% 100%;
+}
+.social-icons .social-icon-instagram::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-instagram' viewBox='0 0 16 16'%3E%3Cpath d='M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334'/%3E%3C/svg%3E");
+}
+
+    .social-icons .social-icon-fb::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%234267B2' d='M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z'/%3E%3C/svg%3E");
+    }
+
+    .social-icons .social-icon-vk::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%232787f5' d='M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7 0 0-30 73.1-72.4 120.5-13.7 13.7-20 18.1-27.5 18.1-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5 0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5-20 0-68.6-73.4-97.4-157.4-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7 0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9 0-66.8-3.4-73.1 15.4-73.1 8.7 0 23.7 4.4 58.7 38.1 40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25-11.2-34.9-86.9-106.7-90.3-111.5-8.7-11.2-6.2-16.2 0-26.2.1-.1 72-101.3 79.4-135.6z'/%3E%3C/svg%3E");
+    }
+
+    .social-icons .social-icon-telegram::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%2327a7e7' d='M446.7 98.6l-67.6 318.8c-5.1 22.5-18.4 28.1-37.3 17.5l-103-75.9-49.7 47.8c-5.5 5.5-10.1 10.1-20.7 10.1l7.4-104.9 190.9-172.5c8.3-7.4-1.8-11.5-12.9-4.1L117.8 284 16.2 252.2c-22.1-6.9-22.5-22.1 4.6-32.7L418.2 66.4c18.4-6.9 34.5 4.1 28.5 32.2z'/%3E%3C/svg%3E");
+    }
+
+    .social-icons .social-icon-youtube::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23ff0000' d='M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z'/%3E%3C/svg%3E");
+    }
 </style>
-<div class="container">
+<div class="content-container container">
   <div class="card-main overflow-hidden">
     <div class="card-body p-0">
-      <img src="{{ url_for('header', username=username, filename=header) }}" alt="" class="img-fluid">
-      <div class="row align-items-center">
+{% if header %}
+    <img src="{{ url_for('header', username=username, filename=header) }}" alt="" class="img-fluid">
+{% else %}
+    <img src="{{ url_for('static', filename='img/default_header.jpg') }}" alt="" class="img-fluid">
+{% endif %}      <div class="row align-items-center">
         <div class="col-lg-4 order-lg-1 order-2">
           <div class="d-flex align-items-center justify-content-around m-4">
             <div class="text-center">
@@ -162,118 +266,154 @@ img {
            <div class="d-flex align-items-center justify-content-center mb-2">
               <div class="linear-gradient d-flex align-items-center justify-content-center rounded-circle" style="width: 110px; height: 110px;">
                   <div class="border border-4 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden" style="width: 100px; height: 100px;">
-                      <img src="{{ url_for('userava', username=username, filename=avatar) }}" alt="" class="w-100 h-100" style="object-fit: cover;">
+                    {% if avatar %}
+                    <img src="{{ url_for('userava', username=username, filename=avatar) }}" alt="" class="w-100 h-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/default.jpg') }}" alt="" class="w-100 h-100" style="object-fit: cover;">
+                    {% endif %}
                   </div>
               </div>
           </div>
 
+
             <div class="text-center">
-              <h5 class="fs-5 mb-0 fw-semibold">{{ current_user.getName() }}</h5>
-              <p class="mb-0 fs-4"><a href="{{ url_for('change_profile', username=username) }}">change profile</a></p>
+              <h5 class="fs-5 mb-0 fw-semibold">{{ name }}</h5>
+                  {% if current_user.getLogin() == username %}
+  <div class="col-lg-12 order-last">
+    <ul class="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-start my-3 gap-3">
+      <li>
+        <a href="{{ url_for('add_post', username=username) }}" class="btn btn-primary">Add To Post</a>
+      </li>
+      <li>
+        <a href="{{ url_for('change_profile', username=username) }}" class="btn btn-primary">Change profile</a>
+      </li>
+    </ul>
+  </div>
+  {% endif %}
             </div>
           </div>
         </div>
-        <div class="col-lg-17 order-last">
-          <ul class="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-start my-3 gap-3">
-              <li>
-                  <a href="/create" class="btn btn-primary">Add To Beat</a>
-              </li>
-          </ul>
+
       </div>
-      </div>
+        <ul class="social-icons" style="justify-content: flex-end; margin-right: 20px; margin-top: -60px;">
+    {% if instagram %}
+        <li><a class="social-icon-instagram" href="{{ instagram }}" title="Instagram" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+    {% if telegram %}
+        <li><a class="social-icon-telegram" href="{{ telegram }}" title="Telegram" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+    {% if facebook %}
+        <li><a class="social-icon-facebook" href="{{ facebook }}" title="Facebook" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+    {% if tik_tok %}
+        <li><a class="social-icon-tik-tok" href="{{ tik_tok }}" title="Tik Tok" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+    {% if vk %}
+        <li><a class="social-icon-youtube" href="{{ vk }}" title="VK" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+    {% if youtube %}
+        <li><a class="social-icon-vk" href="{{ youtube }}" title="YouTube" target="_blank" rel="noopener"></a></li>
+    {% endif %}
+</ul>
       <ul class="nav nav-pills user-profile-tab justify-content-end mt-2 bg-light-info rounded-2" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
 <a class="nav-link position-relative rounded-0 {% if request.path == url_for('profile', username=username) %}active{% endif %} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-profile-tab" href="{{ url_for('profile', username=username) }}" role="tab" aria-controls="pills-profile" aria-selected="true">
-        <i class="fa fa-user me-2 fs-6"></i>
-        <span class="d-none d-md-block">Profile</span>
+        <i class="fa fa-user me-2 fs-6" style="color: white;"></i>
+        <span class="d-none d-md-block" style="color: white;">Profile</span>
     </a>
 </li>
 <li class="nav-item" role="presentation">
 <a class="nav-link position-relative rounded-0 {% if request.path == url_for('show_post', username=username) %}active{% endif %} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-followers-tab" href="{{ url_for('show_post', username=username) }}" role="tab" aria-controls="pills-followers" aria-selected="false" tabindex="-1">
-        <i class="fa fa-heart me-2 fs-6"></i>
-        <span class="d-none d-md-block">Followers</span>
+        <i class="fa fa-heart me-2 fs-6" style="color: white;"></i>
+        <span class="d-none d-md-block" style="color: white;">Posts</span>
     </a>
 </li>
 
 </ul>
     </div>
   </div>
-  <style>
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-.card {
-  width: 320px; /* фіксований розмір картки */
-  height: 400px; /* фіксована висота картки */
-  padding: 20px;
-  margin: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  text-align: center;
-  overflow: hidden; /* обрізати зайві елементи, якщо вони виходять за межі */
+    <style>
+.posts-content{
+    margin-top:20px;
+    }
+.ui-w-40 {
+    width: 60px !important;
+    height: 60px !important;
+
+.ui-w-40.rounded-circle {
+    border-radius: 50% !important;
+}
+}
+.default-style .ui-bordered {
+    border: 1px solid rgba(24,28,33,0.06);
+}
+.ui-bg-cover {
+    background-color: #5d87ff;
+    background-position: center center;
+    background-size: cover;
+}
+.ui-rect {
+    padding-top: 50% !important;
+}
+.ui-rect, .ui-rect-30, .ui-rect-60, .ui-rect-67, .ui-rect-75 {
+    position: relative !important;
+    display: block !important;
+    padding-top: 100% !important;
+    width: 100% !important;
+}
+.d-flex, .d-inline-flex, .media, .media>:not(.media-body), .jumbotron, .card {
+    -ms-flex-negative: 1;
+    flex-shrink: 1;
+}
+.bg-dark {
+    background-color: rgba(24,28,33,0.9) !important;
+}
+.card-footer, .card hr {
+    border-color: rgba(24,28,33,0.06);
+}
+.ui-rect-content {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
+.default-style .ui-bordered {
+    border: 1px solid rgba(24,28,33,0.06);
 }
 
-.card img {
-  width: 100%;
-  min-height: 250px; /* мінімальна висота для фото */
-  max-width: 100%;
-  object-fit: cover;
-  border-radius: 8px; /* заокруглення кутів зображення */
-}
 
-  .card h3 {
-    margin-top: 10px;
-  }
+    </style>
+<div class="container posts-content">
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="media mb-3">
+                        {% if avatar %}
+                        <img src="{{ url_for('userava', username=username, filename=avatar) }}" class="d-block ui-w-40 rounded-circle" alt="">
+                        {% else %}
+                        <img src="{{ url_for('static', filename='img/default.jpg') }}" class="d-block ui-w-40 rounded-circle" alt="">
+                        {% endif %}
+                        <div class="media-body ml-3">
+                            {{ post.text }}
+                            <div class="text-muted small">{{ current_user.getName() }}</div>
+                        </div>
+                    </div>
 
-  /* Стилізація плеєра */
-  .plyr__controls button {
-    color: #fff;
-    background-color: #3498db; /* синій колір */
-  }
+                    <p>
+                        {{ post.bigtext }}
+                    </p>
+                    <a href="javascript:void(0)" class="ui-rect ui-bg-cover" style="background-image: url({{ url_for('posts_photo', filename=post.photo_path) }});"></a>
+                </div>
 
-  .plyr {
-    background-color: #f0f0f0; /* світло-сірий фон */
-    border-radius: 8px;
-    padding: 10px;
-  }
-
-  .plyr__controls .plyr__controls__item,
-  .plyr__controls .plyr__time {
-    font-family: 'Arial', sans-serif; /* Змініть на вибраний вами шрифт */
-  }
-
-  .plyr__controls button:hover {
-    background-color: #2980b9; /* зміна коліру при наведенні */
-  }
-
-  .audio-container {
-  height: 50px; /* фіксована висота аудіо-плеєра */
-}
-
-.audio-container audio {
-  width: 100%;
-  height: 100%;
-}
-</style>
-<div class="container marketing">
-{% for post in posts %}
-<div class="row featurette">
-    <div class="col-md-7 {% if loop.index is divisibleby 2 %} order-md-2 {% endif %}">
-        <h2 class="featurette-heading">{{ post.text }}</h2>
-        <p class="lead">{{ post.bigtext }}</p>
-    </div>
-    <div class="col-md-4">
-        <img class="featurette-image img-fluid mx-auto" src="{{ url_for('posts_photo', filename=post.photo_path) }}" alt="Photo">
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
-<hr class="featurette-divider">
-{% endfor %}
-</div>
 
-    <!-- Add more cards as needed -->
 
   <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
   <script>

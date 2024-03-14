@@ -58,6 +58,7 @@ def create_db():
     cur = db.cursor()
     cur.execute("""CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        login TEXT,
         text text NOT NULL,
         bigtext text NOT NULL,
         photo_post TEXT NOT NULL
@@ -69,7 +70,13 @@ def create_db():
         login text NOT NULL,
         password text NOT NULL,
         avatar text DEFAULT NULL,
-        header text DEFAULT NULL
+        header text DEFAULT NULL,
+        instagram text DEFAULT NULL,
+        telegram text DEFAULT NULL,
+        facebook text DEFAULT NULL,
+        tik_tok text DEFAULT NULL,
+        vk DEFAULT NULL,
+        youtube DEFAULT NULL
         )""")
     cur.execute("""
         CREATE TABLE IF NOT EXISTS users_card (
@@ -79,6 +86,9 @@ def create_db():
         text_beat TEXT NOT NULL,
         genre TEXT NOT NULL,
         bpm INTEGER NOT NULL,
+        energy INTEGER NOT NULL,
+        joy INTEGER NOT NULL,
+        mood INTEGER NOT NULL,
         tags TEXT NOT NULL
     )""")
 
@@ -108,7 +118,7 @@ def before_request():
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template(['about.html', 'base.html'], current_user=current_user)
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -119,6 +129,9 @@ def upload_file():
         text = request.form['text']
         genre = request.form['genre']
         bpm = request.form['bpm']
+        energy = request.form['energy']
+        joy = request.form['joy']
+        mood = request.form['mood']
         tags = request.form['tags']
         if (file and mus and text and genre and bpm and tags and
                 current_user.verifyExt(file.filename) and
@@ -133,10 +146,9 @@ def upload_file():
                 res = dbase.addCardBeat(current_user.getLogin(),
                                         photo_filename,
                                         audio_filename,
-                                        text,
-                                        genre,
-                                        bpm,
-                                        tags)
+                                        text, genre,
+                                        bpm, energy,
+                                        joy, mood, tags)
                 if res:
                     flash("Музыка добавлена успешно", category='success')
             except Exception as ex:
@@ -174,8 +186,8 @@ def login():
     return render_template('form.html')
 
 
-@app.route("/add_post", methods=['POST', 'GET'])
-def add_post():
+@app.route("/add_post/<username>", methods=['POST', 'GET'])
+def add_post(username):
     k = None
     if request.method == 'POST':
         file = request.files['image_file']
@@ -183,9 +195,9 @@ def add_post():
             photo_filename = str(uuid4()) + f".{file.filename.rsplit('.', 1)[1]}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER_POST'], photo_filename))
 
-            res = dbase.addPost(request.form['text'], request.form['bigtext'], photo_filename)
+            res = dbase.addPost(username, request.form['text'], request.form['bigtext'], photo_filename)
             if res:
-                return redirect(url_for("show_post"))
+                return redirect(url_for("show_post", username=username))
             else:
                 flash("Ошибка добавления статьи", category='error')
         else:
@@ -207,25 +219,44 @@ def pageNotFound(error):
 @app.route("/posts_profile/<username>")
 # @login_required
 def show_post(username):
-    posts = dbase.getPost()
+    posts = dbase.getPost(username)
     users = dbase.getUserByLogin(username)
+    instagram = users['instagram']
+    telegram = users['telegram']
+    facebook = users['facebook']
+    tik_tok = users['tik_tok']
+    vk = users['vk']
+    youtube = users['youtube']
+    print((instagram, telegram, facebook, tik_tok, vk, youtube))
     print(posts)
 
     return render_template('posts_profile.html',
+                           name=users['name'],
                            posts=posts,
                            avatar=users['avatar'],
                            header=users['header'],
-                           username=username)
+                           username=username,
+                           current_user=current_user,
+                           instagram=instagram,
+                           telegram=telegram,
+                           facebook=facebook,
+                           tik_tok=tik_tok,
+                           vk=vk,
+                           youtube=youtube)
 
 
 @app.route("/home")
+@app.route("/")
 # @login_required
 def main():
     data = dbase.getNameTagsBeat()
-    res = []
-    for i in data:
-        res += i
-    return render_template('post.html', data=res)
+    data_user = dbase.getNewUsers()
+    card = dbase.getCardBeatOnMainPageAll()
+
+    card_genre_rock = dbase.getCardBeat(data='Rock', colum='genre')
+    card_genre_pop = dbase.getCardBeat(data='Pop', colum='genre')
+    return render_template(['post.html', 'base.html'], data=data, users=data_user,
+                           card=card, current_user=current_user, genres_rock=card_genre_rock, genres_pop=card_genre_pop)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -234,9 +265,16 @@ def register():
         return redirect(url_for('profile'))
 
     if request.method == 'POST':
+        instagram = request.form['instagram']
+        telegram = request.form['telegram']
+        facebook = request.form['facebook']
+        tik_tok = request.form['tik_tok']
+        youtube = request.form['youtube']
+        vk = request.form['vk']
         if len(request.form['email']) > 5 and request.form['psw'] == request.form['psw-repeat']:
             hash = generate_password_hash(request.form['psw'])
-            res = dbase.addUser(request.form['name'], request.form['email'], request.form['login'], hash)
+            res = dbase.addUser(request.form['name'], request.form['email'], request.form['login'], hash,
+                                instagram, telegram, facebook, tik_tok, youtube, vk)
             if res == 400:
                 flash("Данная почта уже используется", category='error')
             if res == 401:
@@ -260,25 +298,37 @@ def register():
 @app.route('/register_update/<username>', methods=['POST', 'GET'])
 def register_update(username):
     users = dbase.getUserByLogin(username)
+    try:
 
-    if request.method == 'POST':
-        new_name = request.form['name_update'] if request.form.get('name_update') else current_user.getName()
-        new_email = request.form['email_update'] if request.form.get('email_update') else current_user.getEmail()
-        new_login = request.form['login_update'] if request.form.get('login_update') else current_user.getLogin()
+        if request.method == 'POST':
+            new_name = request.form['name_update'] if request.form.get('name_update') else current_user.getName()
+            new_email = request.form['email_update'] if request.form.get('email_update') else current_user.getEmail()
+            new_login = request.form['login_update'] if request.form.get('login_update') else current_user.getLogin()
 
-        # try:
-        res = dbase.updateUser(current_user.get_id(), new_name, new_email, new_login)
-        if res == 400:
-            flash("Данная почта уже используется", category='error')
-            return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
-        if res == 401:
-            flash("Имя пользователя уже занято", category='error')
-            return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
+            new_instagram = request.form['instagram'] if request.form.get('instagram') else current_user.getInstagram()
+            new_telegram = request.form['telegram'] if request.form.get('telegram') else current_user.getTelegram()
+            new_facebook = request.form['facebook'] if request.form.get('facebook') else current_user.getFacebook()
+            new_tik_tok = request.form['tik_tok'] if request.form.get('tik_tok') else current_user.getTikTok()
+            new_vk = request.form['vk'] if request.form.get('vk') else current_user.getVK()
+            new_youtube = request.form['youtube'] if request.form.get('youtube') else current_user.getYouTube()
 
-        return redirect(url_for('profile', username=username))
-        # except Exception as e:
-        #     flash("Произошла ошибка при обновлении данных пользователя", category='error')
-        #     print(e)
+            # try:
+            res = dbase.updateUser(current_user.get_id(), new_name, new_email, new_login, new_instagram, new_telegram,
+                                   new_facebook, new_tik_tok, new_vk, new_youtube)
+            if res == 400:
+                flash("Данная почта уже используется", category='error')
+                return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
+            if res == 401:
+                flash("Имя пользователя уже занято", category='error')
+                return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
+        if request.form['login_update']:
+            return redirect(url_for('profile', username=request.form['login_update']))
+        else:
+            return redirect(url_for('profile', username=username))
+
+    except Exception as e:
+        flash("Произошла ошибка при обновлении данных пользователя", category='error')
+        print(e)
 
     return render_template('change_profile.html', avatar=users['avatar'], header=users['header'])
 
@@ -303,34 +353,49 @@ def profile(username):
     print(user_data['name'])
     print(user_data['id'])
     post_len = len(posts)
-    # Генерируем URL с именем пользователя
+
+    instagram = user_data['instagram']
+    telegram = user_data['telegram']
+    facebook = user_data['facebook']
+    tik_tok = user_data['tik_tok']
+    vk = user_data['vk']
+    youtube = user_data['youtube']
+    print((instagram, telegram, facebook, tik_tok, vk, youtube))
     profile_url = url_for('profile', username=username)
     print(profile_url)
-    return render_template('profile.html',
+    return render_template(['profile.html','base.html'],
                            posts=posts,
                            post_len=post_len,
                            name=user_data['name'],
                            avatar=user_data['avatar'],
                            header=user_data['header'],
-                           username=username)
+                           username=username,
+                           current_user=current_user,
+                           instagram=instagram, telegram=telegram,
+                           facebook=facebook, tik_tok=tik_tok,
+                           vk=vk, youtube=youtube)
 
 
 @app.route('/change_profile/<username>')
 @login_required
 def change_profile(username):
     users = dbase.getUserByLogin(username)
-    return render_template('change_profile.html',
+    return render_template(['change_profile.html', 'base.html'],
                            get_name=current_user.getName(),
                            get_email=current_user.getEmail(),
                            get_login=current_user.getLogin(),
                            avatar=users['avatar'],
                            header=users['header'],
-                           username=username)
+                           username=username,
+                           current_user=current_user,
+                           instagram=current_user.getInstagram(), telegram=current_user.getTelegram(),
+                           facebook=current_user.getFacebook(), tik_tok=current_user.getTikTok(),
+                           vk=current_user.getVK(), youtube=current_user.getYouTube())
 
 
 def getAvatarByLogin(app, login):
     img = None
-    user = dbase.getUserByLogin(login)  # Использование метода getUserByLogin текущего экземпляра класса
+    user = dbase.getUserByLogin(login)
     if user:
         if not user['avatar']:
             try:
@@ -351,7 +416,7 @@ def userava(username, filename):
 
 def getHeaderByLogin(app, login):
     img = None
-    user = dbase.getUserByLogin(login)  # Использование метода getUserByLogin текущего экземпляра класса
+    user = dbase.getUserByLogin(login) 
     if user:
         if not user['header']:
             try:
@@ -434,12 +499,11 @@ def upload_profile():
 def search():
     query = request.args.get('query')
     post = dbase.getCardBeat(data=query, colum='text_beat')
+    post_genre = dbase.getCardBeat(data=query, colum='genre')
     print(query)
-    data = dbase.getNameTagsBeat()
-    res = []
-    for i in data:
-        res += i
-    return render_template('search.html', posts=post, search=query)
+    users = dbase.getUserByTextSearch(query)
+
+    return render_template('search.html', posts=(post + post_genre), search=query, users=users)
 
 
 if __name__ == "__main__":

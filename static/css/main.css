@@ -3,7 +3,7 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.9); /* Прозрачный белый фон */
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 
@@ -15,16 +15,16 @@
 
 
 .container-wrapper {
-    border: 2px solid #777777; /* Цвет границы */
-    border-radius: 15px; /* Радиус скругления */
-    padding-top: 5px; /* Отступ сверху */
-    padding-right: 5px; /* Отступ справа */
-    padding-bottom: 5px; /* Отступ снизу */
-    padding-left: 1px; /* Отступ слева */
-    overflow: hidden; /* Скрыть возможное переполнение содержимого */
-    width: 30%; /* Пример ширины контейнера, вы можете использовать проценты или другие единицы измерения */
-    height: auto; /* Вы можете установить высоту в автоматический режим или конкретное значение */
-    margin: 30px; /* Пример отступов между контейнером и окружающими элементами */
+    border: 2px solid #777777;
+    border-radius: 15px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 1px;
+    overflow: hidden;
+    width: 30%;
+    height: auto;
+    margin: 30px;
 }
 
 .card_music {
@@ -36,8 +36,8 @@
     background-color: #f8f9fa;
     border: none;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Добавляем тень */
-    transition: transform 0.2s, box-shadow 0.2s; /* Добавляем анимацию к тени */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 
 }
 
@@ -59,13 +59,13 @@ audio::-webkit-media-controls-panel {
 }
 
 .card-cover {
-    background-size: cover; /* Заполнение всей области фона */
-    background-position: center; /* Центрирование фона */
+    background-size: cover;
+    background-position: center;
 }
 
 .card-cover img {
-    width: 100%; /* Занимает всю ширину родительского контейнера */
-    height: auto; /* Автоматическое масштабирование высоты для сохранения пропорций */
+    width: 100%;
+    height: auto;
 }
 
 .title {
@@ -94,18 +94,18 @@ audio::-webkit-media-controls-panel {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.5); /* Белый полупрозрачный слой */
-    z-index: 1; /* Помещаем его над изображением */
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1;
 }
 
 .card_music .text-content {
     position: relative;
-    z-index: 2; /* Помещаем его над слоем с фоном */
+    z-index: 2;
 }
 
 @media (prefers-color-scheme: dark) {
     .card::after {
-        background-color: rgba(0, 0, 0, 0.5); /* Черный полупрозрачный слой для темного режима */
+        background-color: rgba(0, 0, 0, 0.5);
     }
 }
 
@@ -116,29 +116,23 @@ main {
 .wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Зробить wrapper повністю висоти вікна */
+    min-height: 100vh;
 }
 
 
 
 .gradient-custom-3 {
-/* fallback for old browsers */
 background: #84fab0;
 
-/* Chrome 10-25, Safari 5.1-6 */
 background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
 
-/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5))
 }
 .gradient-custom-4 {
-/* fallback for old browsers */
 background: #84fab0;
 
-/* Chrome 10-25, Safari 5.1-6 */
 background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1));
 
-/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
 }
 

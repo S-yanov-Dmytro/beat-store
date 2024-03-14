@@ -1,5 +1,4 @@
 from flask import url_for
-from fdb import FDatabase
 
 
 class UserLogin:
@@ -27,10 +26,28 @@ class UserLogin:
         return self.__user['name'] if self.__user else "Без имени"
 
     def getEmail(self):
-        return self.__user['email'] if self.__user else "Без email"
+        return self.__user['email'] if self.__user else False
 
     def getLogin(self):
         return self.__user['login'] if self.__user else "Без login"
+
+    def getInstagram(self):
+        return self.__user['instagram'] if self.__user else "Don't have Instagram"
+
+    def getTelegram(self):
+        return self.__user['telegram'] if self.__user else "Don't have Telegram"
+
+    def getFacebook(self):
+        return self.__user['facebook'] if self.__user else "Don't have Facebook"
+
+    def getTikTok(self):
+        return self.__user['tik_tok'] if self.__user else "Don't have Tik-Tok"
+
+    def getVK(self):
+        return self.__user['vk'] if self.__user else "Don't have VK"
+
+    def getYouTube(self):
+        return self.__user['youtube'] if self.__user else "Don't have YouTube"
 
     def getAvatar(self, app):
         img = None
@@ -57,8 +74,6 @@ class UserLogin:
             img = self.__user['header']
 
         return img
-
-
 
     def verifyExt(self, filename):
         ext = filename.rsplit('.', 1)[1]

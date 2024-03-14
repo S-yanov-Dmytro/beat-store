@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block create %}
-    <style>
+      <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
         }
 
         h1 {
@@ -33,41 +33,56 @@
             cursor: pointer;
         }
 
-        /* Стилі для поля введення тегів */
-        #tags {
+       #tags {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #666;
             border-radius: 5px;
             font-size: 16px;
+            color: #fff !important;
+            background-color: #444 !important;
         }
 
-        /* Обрамлення введення тегів при фокусі */
         #tags:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
 
         .tag-item {
-    background-color: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-right: 5px;
-}
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
 
-#bpmDisplay {
-text-transform: uppercase;
-}
+        #bpmDisplay {
+            text-transform: uppercase;
+        }
 
+        .form-control, .form-select, .form-range {
+            background-color: #333 !important;
+            color: #fff !important;
+            border-color: #555 !important;
+        }
 
+        .btn-primary {
+            background-color: #800080;
+            border-color: #800080;
+        }
+
+        .btn-primary:hover {
+            background-color: #9400d3;
+            border-color: #9400d3;
+        }
+
+        .form-control:focus {
+            background-color: #444;
+            color: #fff;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
     </style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    <script src="../../assets/vendor/bootstrap-tagsinput/js/bootstrap-tagsinput.min.js"></script>
-
-
-<body>
     <div class="container">
         <h1 class="mb-5">Upload Files and Input Text</h1>
         <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
@@ -86,50 +101,85 @@ text-transform: uppercase;
             <div class="mb-3">
                 <label for="genre" class="form-label">Genre:</label>
                 <select class="form-select" name="genre">
-                    <option value="rock">Rock</option>
-                    <option value="pop">Pop</option>
-                    <option value="hip-hop">Hip Hop</option>
+                    <option value="Jerk">Jerk</option>
+                    <option value="Opiumcore">Opiumcore</option>
+                    <option value="New Jazz">New Jazz</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="Ambient">Ambient</option>
+                    <option value="Drum & Bass">Drum & Bass</option>
+                    <option value="Breakcore">Breakcore</option>
+                    <option value="Jercey Club">Jercey Club</option>
+                    <option value="Trap">Trap</option>
+                    <option value="Glo">Glo</option>
+                    <option value="Rage">Rage</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Supertrap">Supertrap</option>
+                    <option value="Maoricore">Maoricore</option>
+                    <option value="Funk">Funk</option>
+                    <option value="Phonk">Phonk</option>
+                    <option value="Jungle">Jungle</option>
+                    <option value="Dubstep">Dubstep</option>
+                    <option value="Breakbeat">Breakbeat</option>
+                    <option value="EDM">EDM</option>
+                    <option value="House">House</option>
+                    <option value="Witch House">Witch House</option>
+                    <option value="Plugg">Plugg</option>
+                    <option value="Drill">Drill</option>
+                    <option value="Boom bap">Boom bap</option>
+                    <option value="Detroit">Detroit</option>
+                    <option value="West Coast">West Coast</option>
+                    <option value="Memphis">Memphis</option>
+                    <option value="Pop">Pop</option>
+
+
                 </select>
             </div>
-            <div class="mb-3">
+           <div class="mb-3">
                 <label for="bpm" class="form-label">BPM:</label>
-                    <input name="bpm" id="ex8" data-id='ex1RangePicker' type="range" data-min="0" data-max="20" data-step="1" data-value="14"/>
-                <label id="bpmDisplay">14</label> <!-- This label will display the current value of the range -->
+                <input name="bpm" id="ex8" data-id='ex1RangePicker' type="range" min="0" max="255" step="1" value="14"/>
+                <label id="bpmDisplay">14</label>
             </div>
-
-
+            <div class="mb-3">
+                <label for="energy" class="form-label">Energy:</label>
+                <input name="energy" id="energyRange" type="range" min="0" max="100" value="50" class="form-range">
+            </div>
+            <div class="mb-3">
+                <label for="joy" class="form-label">Joy:</label>
+                <input name="joy" id="joyRange" type="range" min="0" max="100" value="70" class="form-range">
+            </div>
+            <div class="mb-3">
+                <label for="mood" class="form-label">Mood:</label>
+                <input name="mood" id="moodRange" type="range" min="0" max="100" value="50" class="form-range">
+            </div>
             <div class="mb-3">
                 <label for="tags" class="form-label">Tags:</label>
-                <input id="tags" class="form-control" name="tags" placeholder="Add tags">
+                <input id="tags" class="form-control" name="tags">
             </div>
             <button type="submit" class="btn btn-primary">Upload</button>
         </form>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    var input = document.getElementById('tags');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var input = document.getElementById('tags');
 
-    new Tagify(input, {
-        maxTags: 7,
-        enforceWhitelist: false,
-        whitelist: ['da'],
-        maxTagLength: 15,
-        delimiters: " " // Задаем пробел в качестве разделителя
-    });
+            new Tagify(input, {
+                maxTags: 7,
+                enforceWhitelist: false,
+                whitelist: ['da'],
+                maxTagLength: 15,
+                delimiters: " " // Set space as delimiter
+            });
 
-    var rangeInput = document.getElementById('ex8');
-    var bpmDisplay = document.getElementById('bpmDisplay');
+            var rangeInput = document.getElementById('ex8');
+            var bpmDisplay = document.getElementById('bpmDisplay');
 
-    // Update the label text with the current value of the range input
-    rangeInput.addEventListener('input', function () {
-        bpmDisplay.textContent = rangeInput.value;
-    });
-});
-
-</script>
-
-
-</body>
+            // Update the label text with the current value of the range input
+            rangeInput.addEventListener('input', function () {
+                bpmDisplay.textContent = rangeInput.value;
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+
+{% block register %}
 <head>
     <title>Awesome Bootstrap Signup Form Free Code Snippet</title>
     <meta charset="utf-8">
@@ -9,128 +10,206 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        .signup-page h3 {
+            margin: 20px 0px 30px;
+            padding: 0px 0px 25px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            color: #03A9F4;
+        }
+
+        .signup-page a {
+            color: #03A9F4;
+        }
+
+        .signup-page form {
+            margin: 30px auto;
+            border: 1px solid #fff;
+            width: 500px;
+            padding: 10px 25px;
+            border-radius: 10px;
+            box-shadow: 0 0px 6px rgba(173, 173, 173, 0.5);
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .signup-page .btn {
+            width: 100%;
+            margin: 10px 0px;
+            font-size: 18px;
+            background-color: #6f42c1;
+            border: none;
+        }
+
+        .signup-page .btn:hover {
+            background-color: #5a3f9b;
+            opacity: 0.8;
+        }
+
+        .signup-page label.term-policy {
+            margin: 10px 0px 0px;
+            color: #fff;
+        }
+
+        .signup-page label.choose-icon {
+            float: right;
+            margin-top: -38px;
+            background-color: #f5f5f5;
+            padding: 7px 15px;
+            height: 38px;
+            border-bottom-right-radius: 4px;
+            border-top-right-radius: 4px;
+            border: 1px solid #ccc;
+            position: relative;
+            z-index: 999;
+        }
+
+        .signup-page input[type="file"] {
+            padding: 3px 3px;
+        }
+
+        .signup-page .required-field {
+            color: #F44336;
+            font-size: 17px;
+            margin: 0px 2px;
+        }
+
+        .signup-page label {
+            margin-bottom: 3px;
+            color: #fff;
+        }
+
+            .signup-page input[type="text"]:not(:focus),
+    .signup-page input[type="password"]:not(:focus),
+    .signup-page select:not(:focus),
+    .signup-page input[type="text"]:focus,
+    .signup-page input[type="password"]:focus,
+    .signup-page select:focus {
+        background-color: #333 !important;
+        color: #fff !important;
+        border-color: #555 !important;
+    }
+
+        /*--Responsive CSS--*/
+        @media(max-width: 767px) {
+            .signup-page form {
+                width: 90%;
+            }
+        }
+    </style>
+
 </head>
 <body>
 
-<!-- Sign Up form -->
 <div class="signup-page">
-    <style>
-.signup-page h3 {
-    margin: 20px 0px 30px;
-    padding: 0px 0px 25px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    color: #03A9F4;
-}
-.signup-page a {
-    color: #03A9F4;
-}
-.signup-page form {
-    margin: 30px auto;
-    border: 1px solid #e4e4e4;
-    width: 500px;
-    padding: 10px 25px;
-    border-radius: 10px;
-    box-shadow: 0 0px 6px rgba(173, 173, 173, 0.5);
-}
-.signup-page .btn {
-    width: 100%;
-    margin: 10px 0px;
-    font-size: 18px;
-    background-color: #03A9F4;
-    border: none;
-}
-.signup-page .btn:hover{
-  opacity: 0.8;
-}
-.signup-page label.term-policy {
-    margin: 10px 0px 0px;
-}
-.signup-page label.choose-icon {
-    float: right;
-    margin-top: -38px;
-    background-color: #f5f5f5;
-    padding: 7px 15px;
-    height: 38px;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
-    border: 1px solid #ccc;
-    position: relative;
-    z-index: 999;
-}
-.signup-page input[type="file"] {
-    padding: 3px 3px;
-}
-.signup-page .required-field {
-    color: #F44336;
-    font-size: 17px;
-    margin: 0px 2px;
-}
-.signup-page label {
-    margin-bottom: 3px;
-}
-
-/*--Responsive CSS--*/
-@media(max-width: 767px){
-.signup-page form {
-    width: 90%;
-}
-}
-</style>
-{% with messages = get_flashed_messages(with_categories=true) %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        {% for category, message in messages %}
-            <div class="container mt-3">
-                <div class="alert {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-        {% endfor %}
+    {% for category, message in messages %}
+    <div class="container mt-3">
+        <div class="alert {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
     {% endif %}
-{% endwith %}
-<form action="" method="post" class="container">
-    <h3>Signup</h3>
-      <div class="form-group">
-          <label for="name">Full Name<span class="required-field">*</span></label>
-          <input type="text" class="form-control" placeholder="Full Name" name="name" required>
-      </div>
-      <div class="form-group">
-          <label for="email">Email<span class="required-field">*</span></label>
-          <input type="text" class="form-control" placeholder="Enter Email" name="email" required>
-      </div>
+    {% endwith %}
+    <form action="" method="post" class="container">
+        <h3>Create</h3>
         <div class="form-group">
-          <label for="login">Login<span class="required-field">*</span></label>
-          <input type="text" class="form-control" placeholder="Login" name="login" required>
-      </div>
-      <div class="form-group">
-          <label for="psw">Password<span class="required-field">*</span></label>
-          <input type="password" class="form-control" placeholder="Enter Password" name="psw" required>
+            <label for="name">Full Name<span class="required-field">*</span></label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Full Name" name="name" required>
         </div>
         <div class="form-group">
-          <label for="psw-repeat">Repeat Password<span class="required-field">*</span></label>
-          <input type="password" class="form-control" placeholder="Repeat Password" name="psw-repeat" required>
+            <label for="email">Email<span class="required-field">*</span></label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter Email" name="email" required>
         </div>
-
-      <div class="form-group">
-        <label class="term-policy"><input type="checkbox" required> By creating an account you agree to our <a href="#">Terms & Privacy</a>.</label>
-      </div>
+        <div class="form-group">
+            <label for="login">Login<span class="required-field">*</span></label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Login" name="login" required>
+        </div>
+        <div class="form-group">
+            <label for="psw">Password<span class="required-field">*</span></label>
+            <input type="password" class="form-control" autocomplete="off" placeholder="Enter Password" name="psw" required>
+        </div>
+        <div class="form-group">
+            <label for="psw-repeat">Repeat Password<span class="required-field">*</span></label>
+            <input type="password" class="form-control" autocomplete="off" placeholder="Repeat Password" name="psw-repeat" required>
+        </div>
+        <!-- Social Media Links -->
+        <div class="form-group">
+            <label for="social-media">Social Media</label>
+            <select id="social-media" class="form-control">
+                <option value="none">Select</option>
+                <option value="instagram">Instagram</option>
+                <option value="telegram">Telegram</option>
+                <option value="facebook">Facebook</option>
+                <option value="tik_tok">Tik Tok</option>
+                <option value="vk">VK</option>
+                <option value="youtube">YouTube</option>
+            </select>
+        </div>
+        <div class="form-group" id="instagram-input" style="display: none;">
+            <label for="instagram">Instagram</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter Instagram Profile URL" name="instagram">
+        </div>
+        <div class="form-group" id="telegram-input" style="display: none;">
+            <label for="telegram">Telegram</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter Telegram Profile URL" name="telegram">
+        </div>
+        <div class="form-group" id="facebook-input" style="display: none;">
+            <label for="facebook">Facebook</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter Facebook Profile URL" name="facebook">
+        </div>
+        <div class="form-group" id="tik_tok-input" style="display: none;">
+            <label for="tik_tok">Tik Tok</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter Tik Tok Profile URL" name="tik_tok">
+        </div>
+        <div class="form-group" id="vk-input" style="display: none;">
+            <label for="vk">VK</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter VK Profile URL" name="vk">
+        </div>
+        <div class="form-group" id="youtube-input" style="display: none;">
+            <label for="youtube">YouTube</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Enter YouTube Profile URL" name="youtube">
+        </div>
+        <!-- End Social Media Links -->
+        <div class="form-group">
+            <label class="term-policy"><input type="checkbox" required> By creating an account you agree to our <a href="#">Terms & Privacy</a>.</label>
+        </div>
         <button type="submit" class="btn btn-success">Signup</button>
         <label><input type="checkbox" checked="checked" name="checkbox"> Remember me</label>
-      <hr>
-      <div class="form-group">
-        <p class="text-center">Already have an account? <a href="/login">Login</a></p>
-      </div>
-  </form>
+        <hr>
+        <div class="form-group">
+            <p class="text-center">Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </form>
+
+    <script>
+        document.getElementById("social-media").addEventListener("change", function() {
+            var selectedOption = this.value;
+            var socialMediaInputs = document.querySelectorAll(".form-group[id$='-input']");
+            socialMediaInputs.forEach(function(input) {
+                if (input.id === selectedOption + "-input") {
+                    input.style.display = "block";
+                } else {
+                    input.style.display = "none";
+                }
+            });
+        });
+    </script>
 </div>
 </body>
-</html>
+{% endblock %}

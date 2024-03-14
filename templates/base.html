@@ -13,6 +13,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
       <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
@@ -20,24 +24,64 @@
 
 
 
-
-
- <div class="container header-shadow d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-          <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="32" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" style="background-color: orange; border-color: orange; margin-left: -24px;">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+      <div class="offcanvas-header">
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="32" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
       <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z"/>
     </svg>
-              <span class="fs-4"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><h3>Dobryak</h3></font></font></span>
-          </a>
-
-          <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/home"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Головна</font></font></a>
-            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/about"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Про нас</font></font></a>
-            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/add_post"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Добавить пост</font></font></a>
-            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/login"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Login</font></font></a>
-          </nav>
-        </div>
-
+              <span class="fs-4"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><h3>Dobryak</h3></font></font></span>        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+        <style>
+    .nav-link {
+        font-size: 24px; /* Установите желаемый размер шрифта */
+    }
+ 
+</style>
+      <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item {% if request.path == '/home' %}active{% endif %}">
+            <a class="nav-link" aria-current="page" href="/home">
+              <i class="bi bi-house"></i> &nbsp;&nbsp;&nbsp; Home
+            </a>
+          </li>
+          <li class="nav-item {% if request.path == '/about' %}active{% endif %}" style="margin-bottom: 20px;">
+            <a class="nav-link" href="/about">
+              <i class="bi bi-person-rolodex"></i> &nbsp;&nbsp;&nbsp; About us
+            </a>
+          </li>
+              {% if current_user.is_authenticated %}
+          <li class="nav-item {% if '/profile' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('profile', username=current_user.getLogin()) }}">
+                <i class="bi bi-person-circle"></i> &nbsp;&nbsp;&nbsp; {{ current_user.getLogin() }}
+            </a>
+          </li>
+          <li class="nav-item {% if '/change_profile' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('change_profile', username=current_user.getLogin()) }}">
+                <i class="bi bi-gear"></i> &nbsp;&nbsp;&nbsp; Change profile
+            </a>
+          </li>
+          <li class="nav-item {% if '/logout' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="bi bi-box-arrow-right"></i> &nbsp;&nbsp;&nbsp; Sign out
+            </a>
+          </li>
+              {% else %}
+          <li class="nav-item {% if request.path == '/login' %}active{% endif %}">
+            <a class="nav-link" href="/login">
+                <i class="bi bi-box-arrow-in-left"></i> &nbsp;&nbsp;&nbsp; Login
+            </a>
+          </li>
+        </ul>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
 
 </head>
 <body>
@@ -58,31 +102,88 @@
 
 {% block content %}{% endblock %}
 
+{% block register %}{% endblock %}
+
 </div>
-  <footer class="text-center text-white footer" style="background-color: #0a4275;">
-        <!-- Grid container -->
-        <div class="container p-4 pb-0">
-            <!-- Section: CTA -->
-            <section class="">
-                <p class="d-flex justify-content-center align-items-center">
-                    <span class="me-3">Register for free</span>
-                    <button data-mdb-ripple-init type="button" class="btn btn-outline-light btn-rounded">
-                        Sign up!
-                    </button>
-                </p>
-            </section>
-            <!-- Section: CTA -->
-        </div>
-        <!-- Grid container -->
+<style>
+    .social-icons {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+.social-icons>li {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+.social-icons a {
+  position: relative;
+  background-color: #eee;
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: background-color .3s ease-in-out;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: .25rem;
+}
+.social-icons a:hover {
+  background-color: #e0e0e0;
+}
+.social-icons a::before {
+  content: "";
+  position: absolute;
+  width: 1.2rem;
+  height: 1.2rem;
+  left: .65rem;
+  top: .65rem;
+  background: transparent no-repeat center center;
+  background-size: 100% 100%;
+}
+.social-icons .social-icon-instagram::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-instagram' viewBox='0 0 16 16'%3E%3Cpath d='M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334'/%3E%3C/svg%3E");
+}
 
-        <!-- Copyright -->
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-            © 2020 Copyright:
-            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-        </div>
-        <!-- Copyright -->
-    </footer>
-  <!-- Footer -->
+    .social-icons .social-icon-fb::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%234267B2' d='M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z'/%3E%3C/svg%3E");
+    }
 
+    .social-icons .social-icon-vk::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%232787f5' d='M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7 0 0-30 73.1-72.4 120.5-13.7 13.7-20 18.1-27.5 18.1-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5 0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5-20 0-68.6-73.4-97.4-157.4-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7 0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9 0-66.8-3.4-73.1 15.4-73.1 8.7 0 23.7 4.4 58.7 38.1 40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25-11.2-34.9-86.9-106.7-90.3-111.5-8.7-11.2-6.2-16.2 0-26.2.1-.1 72-101.3 79.4-135.6z'/%3E%3C/svg%3E");
+    }
+
+    .social-icons .social-icon-telegram::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%2327a7e7' d='M446.7 98.6l-67.6 318.8c-5.1 22.5-18.4 28.1-37.3 17.5l-103-75.9-49.7 47.8c-5.5 5.5-10.1 10.1-20.7 10.1l7.4-104.9 190.9-172.5c8.3-7.4-1.8-11.5-12.9-4.1L117.8 284 16.2 252.2c-22.1-6.9-22.5-22.1 4.6-32.7L418.2 66.4c18.4-6.9 34.5 4.1 28.5 32.2z'/%3E%3C/svg%3E");
+    }
+
+    .social-icons .social-icon-youtube::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23ff0000' d='M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z'/%3E%3C/svg%3E");
+    }
+</style>
+<footer class="text-center text-white footer" style="background-color: #6f42c1;">
+    <div class="container p-4 pb-0">
+        <section class="">
+            <p class="d-flex justify-content-center align-items-center">
+                <span class="me-3">Register for free</span>
+                <a href="/login" class="btn btn-outline-light btn-rounded" data-mdb-ripple-init>
+                    Sign up!
+                </a>
+            </p>
+        </section>
+    </div>
+    <ul class="social-icons" style="justify-content: flex-end; margin-right: 20px; margin-top: -60px;">
+        <li><a class="social-icon-instagram" href="https://www.instagram.com/_._dobryak._/" title="..." target="_blank" rel="noopener"></a></li>
+        <li><a class="social-icon-telegram" href="https://t.me/dobrychek" title="..." target="_blank" rel="noopener"></a></li>
+        <li><a class="social-icon-youtube" href="https://www.youtube.com/channel/UCai7DU0QE9RuqsVEtBMKqbQ" title="..." target="_blank" rel="noopener"></a></li>
+    </ul>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2024 UA:
+        <a class="text-white" href="https://mdbootstrap.com/">Dobryak</a>
+    </div>
+</footer>
 </body>
 </html>

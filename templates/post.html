@@ -2,69 +2,305 @@
 
 {% block posts %}
 
-<div class="container marketing">
-       <div class="container">
-    <input name="search" id="searchInput" placeholder="Search...">
-    <ul id="suggestions"></ul>
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #fff;
+
+    .content-container {
+        margin-top: -100px;
+}
+
+    .container {
+        max-width: 3000px;
+        margin: 0 auto;
+        padding: 0 30px;
+    }
+
+    .big-header-image {
+        max-height: 700px;
+        width: 100%;
+        object-fit: cover;
+        mask-image: linear-gradient(to bottom, rgba(255,255,255,1) 90%, rgba(255,255,255,0));
+        -webkit-mask-image: linear-gradient(to bottom, rgba(255,255,255,1) 90%, rgba(255,255,255,0));
+    }
+
+    .search-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    #suggestions {
+        list-style-type: none;
+        padding: 0;
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    #searchInput {
+        width: 60%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    #suggestions li {
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+    #suggestions li:hover {
+        background-color: #f1f1f1;
+    }
+    .user-section {
+            background: linear-gradient(to bottom, #663399, #000080);
+            background-size: 100% 92%;
+            background-repeat: no-repeat;
+            padding: 20px;
+            color: #ffffff;
+            border-radius: 10px;
+        }
+    .user-section-2 {
+            background: linear-gradient(to bottom, #FFA500, #FF4500);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            padding: 20px;
+            color: #ffffff;
+            border-radius: 10px;
+        }
+      .user-section-3 {
+            background: linear-gradient(to bottom, #8B008B, #9370DB);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            padding: 20px;
+            color: #ffffff;
+            border-radius: 10px;
+        }
+          .user-section-4 {
+            background: linear-gradient(to bottom, #3CB371, #008000);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            padding: 20px;
+            color: #ffffff;
+            border-radius: 10px;
+        }
+</style>
+
+<div class="text-center content-container">
+    <img src="{{ url_for('static', filename='img/6a2c522b-8824-43a5-8dc3-2cd5c07d2a1f.jpg') }}" alt="Big Header Image" class="big-header-image">
 </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-            <h2>Heading</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div>
+<hr>
+<hr>
+<div class="container search-container">
+    <input name="search" id="searchInput" placeholder="Search..." style="color: black; background-color: white;">
+    <ul id="suggestions" style="color: black; background-color: white;"></ul>
+</div>
+<hr>
+<hr>
+   <style>
+    .container_u {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+    }
+
+    .user-profile {
+        flex: 0 0 auto;
+        width: 250px;
+        text-align: center;
+
+    }
+
+    .user-profile img {
+        width: 250px;
+        height: 260px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+    .user-profile h2 {
+        margin: -10px 0 10px 0;
+        text-align: left;
+    }
+    .bit-count {
+        font-size: 16px;
+        color: #888;
+    }
+</style>
+<div class="container"><h2>Самые новые пользователи</h2></div>
+<div class="container_u container user-section">
+    {% for user in users %}
+    <div class="user-profile">
+        <a href="profile/{{ user.login }}">
+            {% if user.avatar %}
+            <img src="{{ url_for('userava', username=user.login, filename=user.avatar) }}" alt="User Avatar">
+            {% else %}
+            <img src="{{ url_for('static', filename='img/photo2.jpg') }}" alt="Default Avatar">
+            {% endif %}
+        </a>
+    <h2><span class="bit-count">{{ user.name }}</span></h2>
     </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+
+<div class="container"><h2>Самые новые треки</h2></div>
+        <style>
+.container_m {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    width: 100%;
+}
+
+
+.plyr--audio .plyr__control {
+  background-color: grey;
+}
+
+.plyr--audio .plyr__controls {
+  background-color: grey;
+}
+.plyr--audio .plyr__control svg {
+  fill: #6f42c1 !important;
+}
+
+
+.plyr--audio .plyr__control:hover,
+.plyr--audio .plyr__control:focus {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.plyr--audio .plyr__control:hover svg,
+.plyr--audio .plyr__control:focus svg {
+  fill: purple !important;
+}
+
+.card {
+  width: 260px;
+  height: 260px;
+  margin: 10px;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: grey;
+}
+
+.card img {
+  width: 260px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+  display: block;
+}
+
+.audio-container {
+  width: 100%;
+}
+.audio-wrapper {
+  background-color: grey;
+  border-radius: 0 0 8px 8px;
+}
+        .plyr--full-ui input[type=range] {
+  color: #000000;
+}
+
+.plyr__control--overlaid {
+  background: rgba(YourRGBColor, .8);
+}
+
+.plyr--video .plyr__control.plyr__tab-focus,
+.plyr--video .plyr__control:hover,
+.plyr--video .plyr__control[aria-expanded=true] {
+  background: YourColor;
+}
+
+.plyr__control.plyr__tab-focus {
+  box-shadow: 0 0 0 5px rgba(YourRGBColor, .5);
+}
+
+.plyr__menu__container .plyr__control[role=menuitemradio][aria-checked=true]::before {
+  background: YourColor;
+}
+
+    </style>
+
+<div class="container_m container user-section-2">
+  {% for user in card %}
+    <div class="user-profile">
+    <img src="{{ url_for('uploaded_photo', filename=user.photo_path) }}" alt="Photo">
+
+    <audio class="audio-container" controls>
+      <source src="{{ url_for('uploaded_audio', filename=user.music_path) }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  {% endfor %}
+</div>
+<hr>
+
+<div class="container"><h2>Rock</h2></div>
+
+<div class="container_m container user-section-3">
+  {% for user in genres_rock %}
+    <div class="user-profile">
+    <img src="{{ url_for('uploaded_photo', filename=user.photo_path) }}" alt="Photo">
+
+    <audio class="audio-container" controls>
+      <source src="{{ url_for('uploaded_audio', filename=user.music_path) }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  {% endfor %}
+</div>
+<hr>
+<div class="container"><h2>Pop</h2></div>
+
+<div class="container_m container user-section-4">
+  {% for user in genres_pop %}
+    <div class="user-profile">
+    <img src="{{ url_for('uploaded_photo', filename=user.photo_path) }}" alt="Photo">
+
+    <audio class="audio-container" controls>
+      <source src="{{ url_for('uploaded_audio', filename=user.music_path) }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  {% endfor %}
+</div>
+<hr>
+
+     <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const players = Plyr.setup('audio', {
+    controls: ['play', 'progress']
+  });
+});
+  </script>
 
 
     <hr class="featurette-divider">
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    var searchInput = document.getElementById('searchInput');
-    var suggestions = document.getElementById('suggestions');
-    var dataFromFlask = {{ data|tojson }};
-    var dummySuggestions = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Orange'];
+        var searchInput = document.getElementById('searchInput');
+        var suggestions = document.getElementById('suggestions');
+        var dataFromFlask = {{ data|tojson }};
+        var dummySuggestions = ['Rock', 'Jerk', 'Trap', 'Funk', 'Drill', 'West Coast', 'Phonk', 'Dubstep', 'EDM', 'Jazz'];
 
-    function sendSearchQuery(query) {
-        window.location.href = "/search?query=" + encodeURIComponent(query);
-    }
+        function sendSearchQuery(query) {
+            window.location.href = "/search?query=" + encodeURIComponent(query);
+        }
 
-    // При фокусе на поле ввода добавляем стандартные подсказки
-    searchInput.addEventListener('focus', function() {
-        suggestions.innerHTML = '';
-        dummySuggestions.forEach(function(suggestion) {
-            var li = document.createElement('li');
-            li.textContent = suggestion;
-            li.addEventListener('click', function() {
-                sendSearchQuery(suggestion);
-            });
-            suggestions.appendChild(li);
-        });
-    });
-
-    // При вводе текста фильтруем подсказки из БД
-    searchInput.addEventListener('input', function() {
-        var searchText = searchInput.value.trim();
-        suggestions.innerHTML = '';
-
-        if (searchText !== '') {
-            var filteredSuggestions = dataFromFlask.filter(function(suggestion) {
-                return suggestion.toLowerCase().includes(searchText.toLowerCase());
-            });
-
-            filteredSuggestions.forEach(function(suggestion) {
+        function showSuggestions() {
+            suggestions.innerHTML = ''; // Clear previous suggestions
+            dummySuggestions.forEach(function(suggestion) {
                 var li = document.createElement('li');
                 li.textContent = suggestion;
                 li.addEventListener('click', function() {
@@ -72,23 +308,53 @@
                 });
                 suggestions.appendChild(li);
             });
+            suggestions.style.display = 'block'; // Show suggestions
         }
-    });
 
-    // При нажатии Enter выполняем поиск по тексту в поле ввода
-    searchInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
+        // Display suggestions when input is focused
+        searchInput.addEventListener('focus', function() {
+            showSuggestions();
+        });
+
+        // Filter suggestions as user types
+        searchInput.addEventListener('input', function() {
             var searchText = searchInput.value.trim();
             if (searchText !== '') {
-                sendSearchQuery(searchText);
+                var filteredSuggestions = dataFromFlask.filter(function(suggestion) {
+                    return suggestion.toLowerCase().includes(searchText.toLowerCase());
+                });
+                suggestions.innerHTML = ''; // Clear previous suggestions
+                filteredSuggestions.forEach(function(suggestion) {
+                    var li = document.createElement('li');
+                    li.textContent = suggestion;
+                    li.addEventListener('click', function() {
+                        sendSearchQuery(suggestion);
+                    });
+                    suggestions.appendChild(li);
+                });
+                suggestions.style.display = 'block'; // Show suggestions
+            } else {
+                suggestions.style.display = 'none'; // Hide suggestions if input is empty
             }
-        }
+        });
+
+        // Handle click outside the input field
+        document.addEventListener('click', function(event) {
+            if (event.target !== searchInput) {
+                suggestions.style.display = 'none'; // Hide suggestions if click is outside input field
+            }
+        });
+
+        // Handle enter key press
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                var searchText = searchInput.value.trim();
+                if (searchText !== '') {
+                    sendSearchQuery(searchText);
+                }
+            }
+        });
     });
-});
-
-
-    </script>
-
-</div>
+</script>
 
 {% endblock %}

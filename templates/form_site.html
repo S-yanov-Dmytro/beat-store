@@ -15,17 +15,54 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+<style>
+
+    body {
+        background-color: #1a1a1a;
+        color: #fff;
+    }
+
+    .container {
+        margin-top: 100px;
+    }
+
+    .form-label,
+    .form-control {
+        color: #fff;
+    }
+
+    .form-control {
+        background-color: #333;
+        border-color: #555;
+    }
+
+    .form-control:focus {
+        background-color: #555;
+        border-color: #777;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #800080;
+        border-color: #800080;
+    }
+
+    .btn-primary:hover {
+        background-color: #6a006a;
+        border-color: #6a006a;
+    }
+</style>
 <form action="" method="post" class="container" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="image_file" class="form-label">Image File:</label>
         <input class="form-control" type="file" name="image_file">
     </div>
     <div class="form-group">
-        <label for="exampleFormControlInput1">Email address</label>
+        <label for="exampleFormControlInput1">Text</label>
         <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="text" name="text">
     </div>
     <div class="form-group">
-        <label for="exampleFormControlTextarea1">Example textarea</label>
+        <label for="exampleFormControlTextarea1">Description</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="text for post" name="bigtext"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
