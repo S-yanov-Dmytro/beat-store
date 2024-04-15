@@ -1,4 +1,4 @@
-from flask import url_for
+from flask import url_for, session
 
 
 class UserLogin:
@@ -18,6 +18,9 @@ class UserLogin:
 
     def is_anonymous(self):
         return False
+
+    def is_admin(self):
+        return True if session.get('admin_logged') else False
 
     def get_id(self):
         return str(self.__user['id'])

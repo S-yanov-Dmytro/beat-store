@@ -1,16 +1,36 @@
 import sqlite3
-from flask import Flask, request, redirect, url_for, flash, render_template, session, abort, g, make_response, \
-    send_from_directory
-from werkzeug.security import generate_password_hash, check_password_hash
 import os
-from fdb import FDatabase
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from userlogin import UserLogin
+
 from time import sleep
 from uuid import uuid4
 
+from userlogin import UserLogin
+from fdb import FDatabase
+from admin.admin import admin
+
+from flask import (Flask,
+                   request,
+                   redirect,
+                   url_for,
+                   flash,
+                   render_template,
+                   g,
+                   send_from_directory,
+                   session)
+
+from werkzeug.security import (generate_password_hash,
+                               check_password_hash)
+from flask_login import (LoginManager,
+                         login_user,
+                         login_required,
+                         logout_user,
+                         current_user)
+
 
 app = Flask(__name__)
+
+app.register_blueprint(admin, url_prefix='/admin')
+
 app.secret_key = 'sdfvddfvwvwvwr'
 MAX_CONTENT_LENGTH = 1024 * 1024
 
@@ -160,12 +180,12 @@ def upload_file():
 
 @app.route('/uploads/photo/<path:filename>')
 def uploaded_photo(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER_IMG'], filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER_IMG'], filename, max_age=3600)
 
 
 @app.route('/uploads/audio/<path:filename>')
 def uploaded_audio(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER_MUS'], filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER_MUS'], filename, max_age=3600)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -231,6 +251,7 @@ def show_post(username):
     print(posts)
 
     return render_template('posts_profile.html',
+                           is_admin=current_user.is_admin(),
                            name=users['name'],
                            posts=posts,
                            avatar=users['avatar'],
@@ -344,9 +365,6 @@ def logout():
 @app.route("/profile/<username>")
 @login_required
 def profile(username):
-    # Получаем логин текущегоб пользователя
-    # login = current_user.getLogin()
-    # Получаем посты для профиля пользователя
     posts = dbase.getCardBeat(data=username, colum='login')
     user_data = dbase.getUserByLogin(username)
     print(user_data['login'])
@@ -364,6 +382,7 @@ def profile(username):
     profile_url = url_for('profile', username=username)
     print(profile_url)
     return render_template(['profile.html','base.html'],
+                           is_admin=current_user.is_admin(),
                            posts=posts,
                            post_len=post_len,
                            name=user_data['name'],
@@ -379,6 +398,23 @@ def profile(username):
 @app.route('/change_profile/<username>')
 @login_required
 def change_profile(username):
+    if current_user.is_admin():
+        users = dbase.getUserByLogin(username)
+        return render_template(['change_profile.html', 'base.html'],
+                               get_name=current_user.getName(),
+                               get_email=current_user.getEmail(),
+                               get_login=current_user.getLogin(),
+                               avatar=users['avatar'],
+                               header=users['header'],
+                               username=username,
+                               current_user=current_user,
+                               instagram=current_user.getInstagram(), telegram=current_user.getTelegram(),
+                               facebook=current_user.getFacebook(), tik_tok=current_user.getTikTok(),
+                               vk=current_user.getVK(), youtube=current_user.getYouTube())
+
+    elif current_user.getLogin() != username:
+        return redirect(url_for('change_profile', username=current_user.getLogin()))
+
     users = dbase.getUserByLogin(username)
     return render_template(['change_profile.html', 'base.html'],
                            get_name=current_user.getName(),
@@ -416,7 +452,7 @@ def userava(username, filename):
 
 def getHeaderByLogin(app, login):
     img = None
-    user = dbase.getUserByLogin(login) 
+    user = dbase.getUserByLogin(login)
     if user:
         if not user['header']:
             try:
@@ -507,4 +543,4 @@ def search():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=1222)
